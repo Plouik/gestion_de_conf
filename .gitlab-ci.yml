@@ -3,17 +3,7 @@ variables:
 
 
 .terraform_init:
-    - export TF_STATE_NAME=default;
     - terraform init 
-       -backend-config="address=https://gitlab.com/api/v4/projects/74522245/terraform/state/$TF_STATE_NAME" 
-       -backend-config="lock_address=https://gitlab.com/api/v4/projects/74522245/terraform/state/$TF_STATE_NAME/lock" 
-       -backend-config="unlock_address=https://gitlab.com/api/v4/projects/74522245/terraform/state/$TF_STATE_NAME/lock" 
-       -backend-config="username=Plouik" 
-       -backend-config="password=$CI_JOB_TOKEN" 
-       -backend-config="lock_method=POST" 
-       -backend-config="unlock_method=DELETE" 
-       -backend-config="retry_wait_min=5"
-    
 
 build:
   stage: build
@@ -23,3 +13,19 @@ build:
   artifacts:
     paths: 
         - 'terraform.tfstate'
+
+test:
+  stage: test
+  script: 
+    - |
+       output=$( curl http://localhost:80/ );
+       echo "Testing that or server is running as $TF_VAR_ENVIRONMENT. Current value is $output";
+       echo $output | grep -o "$TF_VAR_ENVIRONMENT";
+
+teardown:
+  stage: .post
+  script: 
+   - !reference [.terraform_init] 
+   - terraform destroy -auto-approve
+  when: always
+
