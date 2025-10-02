@@ -10,9 +10,6 @@ build:
   script: 
    - !reference [.terraform_init] 
    - terraform apply -auto-approve
-  artifacts:
-    paths: 
-        - 'terraform.tfstate'
 
 test:
   stage: test
