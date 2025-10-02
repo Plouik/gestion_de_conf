@@ -1,9 +1,14 @@
 variables:
   TF_VAR_ENVIRONMENT: "PROD"
 
+.terraform_init:
+    - terraform init 
+
 build:
   stage: build
-  script: terraform init && terraform apply -auto-approve
+  script: 
+   - !reference [.terraform_init] 
+   - terraform apply -auto-approve
   artifacts:
     paths: 
         - 'terraform.tfstate'
@@ -18,5 +23,7 @@ test:
 
 teardown:
   stage: .post
-  script: terraform init && terraform destroy -auto-approve
+  script: 
+   - !reference [.terraform_init] 
+   - terraform destroy -auto-approve
   when: always
