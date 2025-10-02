@@ -3,21 +3,20 @@ variables:
 
 
 .terraform_init:
-    - | 
-      export TF_STATE_NAME=default;
-      terraform init
-        backend-config="address=https://gitlab.com/api/v4/projects/74522245/terraform/state/$TF_STATE_NAME"
-        backend-config="lock_address=https://gitlab.com/api/v4/projects/74522245/terraform/state/$TF_STATE_NAME/lock"
-        backend-config="unlock_address=https://gitlab.com/api/v4/projects/74522245/terraform/state/$TF_STATE_NAME/lock"
-        backend-config="username=Plouik"
-        backend-config="password=$CI_JOB_TOKEN"
-        backend-config="lock_method=POST"
-        backend-config="unlock_method=DELETE"
-        backend-config="retry_wait_min=5"
+    - export TF_STATE_NAME=default;
+    - terraform init 
+       -backend-config="address=https://gitlab.com/api/v4/projects/74522245/terraform/state/$TF_STATE_NAME" 
+       -backend-config="lock_address=https://gitlab.com/api/v4/projects/74522245/terraform/state/$TF_STATE_NAME/lock" 
+       -backend-config="unlock_address=https://gitlab.com/api/v4/projects/74522245/terraform/state/$TF_STATE_NAME/lock" 
+       -backend-config="username=Plouik" 
+       -backend-config="password=$CI_JOB_TOKEN" 
+       -backend-config="lock_method=POST" 
+       -backend-config="unlock_method=DELETE" 
+       -backend-config="retry_wait_min=5"
     
 
 build:
-  stage: build
+  stage:-build
   script: 
    - !reference [.terraform_init] 
    - terraform apply -auto-approve
