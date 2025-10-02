@@ -35,7 +35,6 @@ test:
 
 teardown:
   stage: .post
-  extends: .terraform_init
   script: 
    - !reference [.terraform_init] 
    - terraform destroy -auto-approve
