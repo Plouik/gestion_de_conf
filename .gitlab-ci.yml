@@ -23,13 +23,3 @@ build:
   artifacts:
     paths: 
         - 'terraform.tfstate'
-
-
-
-teardown:
-  stage: .post
-  script: 
-   - !reference [.terraform_init] 
-   - terraform destroy -auto-approve
-  when: never
-
