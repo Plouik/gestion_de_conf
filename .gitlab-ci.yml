@@ -16,7 +16,7 @@ variables:
     
 
 build:
-  stage:-build
+  stage: build
   script: 
    - !reference [.terraform_init] 
    - terraform apply -auto-approve
