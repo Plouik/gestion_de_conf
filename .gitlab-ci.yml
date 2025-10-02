@@ -24,14 +24,7 @@ build:
     paths: 
         - 'terraform.tfstate'
 
-test:
-  stage: test
-  script: 
-    - |
-       output=$( curl http://localhost:80/ );
-       echo "Testing that or server is running as $TF_VAR_ENVIRONMENT. Current value is $output";
-       echo $output | grep -o "$TF_VAR_ENVIRONMENT";
-  when: never
+
 
 teardown:
   stage: .post
