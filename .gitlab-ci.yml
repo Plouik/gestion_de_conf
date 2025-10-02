@@ -3,7 +3,6 @@ variables:
 
 
 .terraform_init:
-  script: 
     - | 
       export TF_STATE_NAME=default;
       terraform init
@@ -19,8 +18,9 @@ variables:
 
 build:
   stage: build
-  extends: .terraform_init
-  script: terraform apply -auto-approve
+  script: 
+   - !reference [.terraform_init] 
+   - terraform apply -auto-approve
   artifacts:
     paths: 
         - 'terraform.tfstate'
@@ -36,6 +36,8 @@ test:
 teardown:
   stage: .post
   extends: .terraform_init
-  script: terraform destroy -auto-approve
+  script: 
+   - !reference [.terraform_init] 
+   - terraform destroy -auto-approve
   when: always
 
