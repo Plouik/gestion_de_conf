@@ -1,6 +1,7 @@
 
 deployapp:
   stage: deploy
+  resource_group: terraform
   trigger:
     include: gitlab/deploy_app.yml
     strategy: depend
