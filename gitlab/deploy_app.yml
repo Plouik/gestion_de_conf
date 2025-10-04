@@ -9,7 +9,6 @@ build:
   stage: build
   script: 
    - !reference [.terraform_init] 
-   - echo "$TF_VAR_my_apps"
    - terraform apply -auto-approve
 
 test:
