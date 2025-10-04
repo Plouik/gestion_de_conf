@@ -6,8 +6,8 @@ variables:
 .terraform_init:
     - terraform init 
 
-test:
-  stage: build 
+echo:
+  stage: .pre 
   script: env
 
 build:
