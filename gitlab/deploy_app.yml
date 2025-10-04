@@ -1,18 +1,17 @@
 variables:
-  TF_VAR_my_apps: "[{Environment:$Environment,port:$port}]"
+  TF_VAR_my_apps: 
+    Environment: $Environment
+    port: $port
 
 
 .terraform_init:
     - terraform init 
 
-echo:
-  stage: .pre 
-  script: env
-
 build:
   stage: build
   script: 
    - !reference [.terraform_init] 
+   - echo "$TF_VAR_my_apps"
    - terraform apply -auto-approve
 
 test:
