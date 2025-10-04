@@ -1,7 +1,5 @@
 variables:
-  TF_VAR_my_apps: 
-    Environment: $Environment
-    port: $port
+  TF_VAR_my_apps: '[{Environment:"$Environment",port:"$port"}]'
 
 
 .terraform_init:
