@@ -1,10 +1,4 @@
 terraform {
-  required_providers {
-    docker = {
-      source = "kreuzwerker/docker"
-      version = "~> 3.0.1"
-    }
-  }
   backend "http" {
     address = "https://gitlab.com/api/v4/projects/74522245/terraform/state/INFRA"
     lock_address = "https://gitlab.com/api/v4/projects/74522245/terraform/state/INFRA/lock"
