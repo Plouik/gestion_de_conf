@@ -1,5 +1,6 @@
 variables:
-  TF_VAR_my_apps: [ { "Environment": ${Environment}, port: ${port} } ]
+  TF_VAR_my_apps: |
+     [ { "Environment": ${Environment}, port: ${port} } ]
 
 
 .terraform_init:
@@ -15,9 +16,9 @@ test:
   stage: test
   script: 
     - |
-       output=$( curl http://localhost:80/ );
-       echo "Testing that or server is running as $TF_VAR_ENVIRONMENT. Current value is $output";
-       echo $output | grep -o "$TF_VAR_ENVIRONMENT";
+       output=$( curl http://localhost:$port/ );
+       echo "Testing that or server is running as $Environment on port $port. Current value is $output";
+       echo $output | grep -o "$Environment";
 
 teardown:
   stage: .post
