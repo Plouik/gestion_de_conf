@@ -7,7 +7,7 @@ variables:
     - terraform init 
 
 test:
-  stage: .pre 
+  stage: build 
   script: env
 
 build:
