@@ -1,28 +1,12 @@
-variables:
-  TF_VAR_ENVIRONMENT: "PROD"
 
-
-.terraform_init:
-    - terraform init 
-
-build:
-  stage: build
-  script: 
-   - !reference [.terraform_init] 
-   - terraform apply -auto-approve
-
-test:
-  stage: test
-  script: 
-    - |
-       output=$( curl http://localhost:80/ );
-       echo "Testing that or server is running as $TF_VAR_ENVIRONMENT. Current value is $output";
-       echo $output | grep -o "$TF_VAR_ENVIRONMENT";
-
-teardown:
-  stage: .post
-  script: 
-   - !reference [.terraform_init] 
-   - terraform destroy -auto-approve
-  when: always
-
+deployapp:
+  stage: deploy
+  trigger:
+    include: gitlab/deploy_app.yml
+    strategy: depend
+  parallel:
+      matrix:
+        - Environment: "prod"
+          port: 80
+        - Environment: "dev"
+          port: 7000
