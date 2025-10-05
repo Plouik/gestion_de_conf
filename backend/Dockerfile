@@ -5,7 +5,5 @@ RUN pip3 install -r requirements.txt
 COPY main.py /app/main.py 
 ARG ENVIRONMENT=DEV
 ENV FLASK_ENV=${ENVIRONMENT}
-
-EXPOSE 80
 ENTRYPOINT ["python3"] 
 CMD ["/app/main.py"]
