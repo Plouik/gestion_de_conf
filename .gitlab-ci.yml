@@ -1,15 +1,5 @@
-deployapp:
-  stage: deploy
-  resource_group: terraform
-  trigger:
-    include: gitlab/deploy_app.yml
-    strategy: depend
-  parallel:
-      matrix:
-        - Environment: "prod"
-          port: 80
-      #  - Environment: "dev"
-      #    port: 7000
-  environment:
-    name: dev
-    url: http://localhost:80
+variables:
+  port: 80
+
+
+include: gitlab/deploy_change.yml

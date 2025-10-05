@@ -1,0 +1,55 @@
+deploy-review:
+  extends: .act-on-change
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+      when: always
+  variables:
+    TF_VAR_my_apps: '[{Environment:"$CI_COMMIT_REF_SLUG",port:"$port"}]'
+  artifacts:
+    reports:
+      dotenv: envurl.env
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    url: $DYNAMIC_ENVIRONMENT_URL
+    on_stop: stop_review
+
+stop_review:
+  extends: .teardown
+  needs:
+    - deploy-review
+  stage: review
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    action: stop
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+      when: manual
+
+.teardown:
+  stage: .post
+  script:
+    - |
+      terraform init
+      terraform destroy --auto-approve
+
+.act-on-change:
+  script:
+    - |
+      terraform init
+      terraform plan -detailed-exitcode --out main.tfplan
+      CHECK_FOR_CHANGE = $?
+      if [ $CHECK_FOR_CHANGE -eq 2 ]; then
+        terraform apply main.tfplan
+        ENV_URL=$( terraform output -json ip_addresses | jq -r '.[].$CI_COMMIT_REF_SLUG.ip_address' )
+        echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
+      elif [ $CHECK_FOR_CHANGE -eq 1 ]; then
+        echo "Terraform plan failed"
+      else
+        echo "Nothing to do."
+      fi
