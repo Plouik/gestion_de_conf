@@ -1,4 +1,5 @@
 gitlab-runner uninstall
+rm -f /etc/gitlab-runner/config.toml 
 gitlab-runner install --user=root --working-directory=/root/gitlab-runner
 gitlab-runner register \
     --non-interactive \
