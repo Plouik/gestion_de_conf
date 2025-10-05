@@ -41,6 +41,7 @@ stop_review:
 .act-on-change:
   script:
     - |
+      set +x
       terraform init
       terraform plan -detailed-exitcode --out main.tfplan
       CHECK_FOR_CHANGE = $?
