@@ -54,6 +54,3 @@ stop_review:
       else
         echo "Nothing to do."
       fi
-  allow_failure:
-    exit_codes:
-      - 2
