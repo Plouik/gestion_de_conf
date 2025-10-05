@@ -10,6 +10,6 @@ deployapp:
           port: 80
       #  - Environment: "dev"
       #    port: 7000
-  environment:
-    name: dev
-    url: http://localhost:80
+  # environment:
+  #   name: dev
+  #   url: http://localhost:80
