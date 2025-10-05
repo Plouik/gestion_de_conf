@@ -44,10 +44,11 @@ stop_review:
       set +x
       terraform init
       terraform plan -detailed-exitcode --out main.tfplan
-      CHECK_FOR_CHANGE = $?
+      CHECK_FOR_CHANGE=$?
       if [ $CHECK_FOR_CHANGE -eq 2 ]; then
         terraform apply main.tfplan
-        ENV_URL=$( terraform output -json ip_addresses | jq -r '.[].$CI_COMMIT_REF_SLUG.ip_address' )
+        jq_filter=".[].$CI_COMMIT_REF_SLUG.ip_address"
+        ENV_URL=$( terraform output -json ip_addresses | jq -r "$jq_filter" )
         echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
       elif [ $CHECK_FOR_CHANGE -eq 1 ]; then
         echo "Terraform plan failed"
