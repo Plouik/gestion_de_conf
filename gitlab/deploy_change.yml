@@ -45,6 +45,7 @@ stop_review:
       terraform init
       terraform plan -detailed-exitcode --out main.tfplan
       CHECK_FOR_CHANGE=$?
+      echo 'ici'
       if [ $CHECK_FOR_CHANGE -eq 2 ]; then
         terraform apply main.tfplan
         jq_filter=".[].$CI_COMMIT_REF_SLUG.ip_address"
