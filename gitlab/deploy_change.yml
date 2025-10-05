@@ -32,7 +32,7 @@ stop_review:
       when: manual
 
 .teardown:
-  stage: .post
+  stage: cleanup
   script:
     - |
       terraform init
