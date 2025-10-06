@@ -8,6 +8,8 @@ deploy-review:
       when: always
   variables:
     TF_VAR_my_apps: '[{Environment:"$CI_COMMIT_REF_SLUG",port:"$port"}]'
+    TF_STATE_NAME: "${CI_COMMIT_REF_SLUG}"
+    TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"  
   artifacts:
     reports:
       dotenv: envurl.env
@@ -31,17 +33,28 @@ stop_review:
     - if: '$CI_COMMIT_BRANCH'
       when: manual
 
+ 
+
+.terraform_init:
+    - terraform init
+      -backend-config="address=${TF_ADDRESS}"
+      -backend-config="lock_address=${TF_ADDRESS}/lock"
+      -backend-config="unlock_address=${TF_ADDRESS}/lock"
+      -backend-config="username=gitlab-ci-token"
+      -backend-config="password=${CI_JOB_TOKEN}"
+      -backend-config="lock_method=POST"
+      -backend-config="unlock_method=DELETE"
+
 .teardown:
   stage: cleanup
   script:
-    - |
-      terraform init
-      terraform destroy --auto-approve
+    - !reference [.terraform_init] 
+    - terraform destroy --auto-approve
 
 .act-on-change:
   script:
+    - !reference [.terraform_init] 
     - |
-      terraform init
       set +e
       terraform plan -detailed-exitcode --out main.tfplan
       CHECK_FOR_CHANGE=$?
