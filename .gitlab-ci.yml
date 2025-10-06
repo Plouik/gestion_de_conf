@@ -1,5 +1,4 @@
-
-deployapp:
+ deployapp:
   stage: deploy
   resource_group: terraform
   trigger:
