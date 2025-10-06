@@ -11,8 +11,8 @@ variables:
       -backend-config="address=${TF_ADDRESS}"
       -backend-config="lock_address=${TF_ADDRESS}/lock"
       -backend-config="unlock_address=${TF_ADDRESS}/lock"
-      -backend-config="username=olivier de saint martin"
-      -backend-config="password=glpat-FeQtTLA2uc6NNPahC9J6ym86MQp1OjJzaGJ2Cw.01.1219qzhir"
+      -backend-config="username=gitlab-ci-token"
+      -backend-config="password=${CI_JOB_TOKEN}"
       -backend-config="lock_method=POST"
       -backend-config="unlock_method=DELETE"
 
