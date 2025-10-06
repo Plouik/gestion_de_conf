@@ -4,8 +4,12 @@ stages:
   - cleanup
 
 
-variables:
-  port: 7000
-  SECURE_LOG_LEVEL: "info"
 
-include: gitlab/deploy_change.yml
+variables:
+  port: 80
+  SECURE_LOG_LEVEL: "info"
+  RESSOURCE_GROUP: "configuration-demo"
+  REGISTRY_NAME: "omiomidemoomi"
+  REGISTRY_FQDN: "${REGISTRY_NAME}.azurecr.io"
+
+# include: gitlab/deploy_change.yml
