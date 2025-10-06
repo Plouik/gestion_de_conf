@@ -14,4 +14,4 @@ gitlab-runner register \
     --executor "shell" \
     --token "$RUNNER_TOKEN" \
     --description "devcontainer-runner" 
-gitlab-runner start
+gitlab-runner start > /dev/null
