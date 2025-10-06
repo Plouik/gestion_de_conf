@@ -1,21 +1,11 @@
+stages:
+  - deploy
+  - review
+  - cleanup
+
+
 variables:
-  TF_VAR_ENVIRONMENT: "PROD"
+  port: 7000
+  SECURE_LOG_LEVEL: "info"
 
-.terraform_init:
-    - terraform init 
-
-build:
-  stage: build
-  script: 
-   - !reference [.terraform_init] 
-   - terraform apply -auto-approve
-  artifacts:
-    paths: 
-        - 'terraform.tfstate'
-
-teardown:
-  stage: .post
-  script: 
-   - !reference [.terraform_init] 
-   - terraform destroy -auto-approve
-  when: always
+include: gitlab/deploy_change.yml
