@@ -16,9 +16,9 @@ deploy-review:
   environment:
     name: review/$CI_COMMIT_REF_SLUG
     url: $DYNAMIC_ENVIRONMENT_URL
-    on_stop: stop_review
+    on_stop: stop_environment
 
-stop_review:
+stop_environment:
   extends: .teardown
   needs:
     - deploy-review
@@ -32,8 +32,25 @@ stop_review:
       when: never
     - if: '$CI_COMMIT_BRANCH'
       when: manual
-
  
+deploy-prod:
+  extends: .act-on-change
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+  variables:
+    TF_VAR_my_apps: '[{Environment:"production",port:"$port"}]'
+    TF_STATE_NAME: "production"
+    TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"  
+  artifacts:
+    reports:
+      dotenv: envurl.env
+  environment:
+    name: production
+    url: $DYNAMIC_ENVIRONMENT_URL
+    on_stop: stop_environment
+
 
 .terraform_init:
     - terraform init
