@@ -5,7 +5,7 @@ stages:
 
 
 variables:
-  port: 80
+  port: 7000
   SECURE_LOG_LEVEL: "info"
 
 include: gitlab/deploy_change.yml
