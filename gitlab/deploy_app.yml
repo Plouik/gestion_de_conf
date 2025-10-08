@@ -7,12 +7,12 @@ variables:
 
 
 include: 
-  - local: build_and_push_docker.yml
-  - local: deploy_review.yml
+  - local: gitlab/build_and_push_docker.yml
+  - local: gitlab/deploy_review.yml
     rules:
       - if: '$CI_COMMIT_BRANCH == "master"'
         when: never
-  - local: deploy_prod.yml
+  - local: gitlab/deploy_prod.yml
     rules:
       - if: '$CI_COMMIT_BRANCH == "master"'
 
