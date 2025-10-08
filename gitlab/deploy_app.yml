@@ -17,7 +17,7 @@
 .build_and_push_docker:
     # - echo "${REGISTRY%%.*}"
     - creds=$(az acr credential show --resource-group "$RESSOURCE_GROUP" --name "omiomidemoomi")
-    - az acr credential show --resource-group "$ressource_group" --name "$registry_name"
+    - az acr credential show --resource-group "$RESSOURCE_GROUP" --name "omiomidemoomi"
     - username=$( echo "$creds" | jq -r '.username' )
     - password=$( echo "$creds" | jq -r '.passwords[0].value' )
     - echo "$password"
