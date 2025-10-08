@@ -2,6 +2,7 @@
 
 build_docker:
   stage: build
+  script:
     - creds=$(az acr credential show --resource-group "$RESSOURCE_GROUP" --name "$REGISTRY")
     - username=$( echo "$creds" | jq -r '.username' )
     - password=$( echo "$creds" | jq -r '.passwords[0].value' )
