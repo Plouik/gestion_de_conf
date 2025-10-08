@@ -1,10 +1,19 @@
+variables:
+  TF_STATE_NAME: "${ENVIRONMENT}"
+  TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"
+  TF_VAR_environment: ${ENVIRONMENT}
+  TF_VAR_ressource_group: "${RESSOURCE_GROUP}"
+  TF_VAR_registry: "${REGISTRY}"
+  TF_VAR_image: "backend:${ENVIRONMENT}"
+  TF_VAR_identity_username: "$IDENTITY"
+
+include: 
+  local: gitlab/deploy_app.yml
+  
+
 deploy-prod:
   extends: .act-on-change
   stage: deploy
-  variables:
-    TF_VAR_my_apps: '[{Environment:"production",port:"$port"}]'
-    TF_STATE_NAME: "production"
-    TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"  
   artifacts:
     reports:
       dotenv: envurl.env
@@ -21,8 +30,4 @@ stop_prod:
   environment:
     name: production
     action: stop
-  variables:
-    TF_VAR_my_apps: '[{Environment:"production",port:"$port"}]'
-    TF_STATE_NAME: "production"
-    TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"  
   allow_failure: true

@@ -1,21 +1,3 @@
-variables:
-  TF_VAR_environment: ${ENVIRONMENT}
-  TF_VAR_ressource_group: "configuration-demo"
-  TF_VAR_registry: "omiomidemoomi.azurecr.io"
-  TF_VAR_image: "backend:${ENVIRONMENT}"
-  TF_VAR_identity_username: "$IDENTITY"
-
-
-include: 
-  - local: gitlab/build_and_push_docker.yml
-  - local: gitlab/deploy_review.yml
-    rules:
-      - if: '$CI_COMMIT_BRANCH == "master"'
-        when: never
-  - local: gitlab/deploy_prod.yml
-    rules:
-      - if: '$CI_COMMIT_BRANCH == "master"'
-
 .terraform_init:
     - terraform init
       -backend-config="address=${TF_ADDRESS}"
@@ -32,9 +14,18 @@ include:
     - !reference [.terraform_init] 
     - terraform destroy --auto-approve
 
+.build_and_push_docker:
+    - creds=$(az acr credential show --resource-group "$RESSOURCE_GROUP" --name "$REGISTRY")
+    - username=$( echo "$creds" | jq -r '.username' )
+    - password=$( echo "$creds" | jq -r '.passwords[0].value' )
+    - docker login "$REGISTRY" --username "$username" --password "$password"
+    - docker build -t "$REGISTRY/$image_to_deploy" ./backend/
+    - docker push "$REGISTRY/$image_to_deploy"
+
 .act-on-change:
   script:
     - !reference [.terraform_init] 
+    - !reference [.build_and_push_docker] 
     - |
       set +e
       terraform plan -detailed-exitcode --out main.tfplan
