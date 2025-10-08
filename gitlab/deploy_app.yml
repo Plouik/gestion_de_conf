@@ -19,10 +19,9 @@
     - creds=$(az acr credential show --resource-group "$RESSOURCE_GROUP" --name "omiomidemoomi")
     - username=$( echo "$creds" | jq -r '.username' )
     - password=$( echo "$creds" | jq -r '.passwords[0].value' )
-    - echo "$REGISTRY"
-    - docker login "$REGISTRY" --username "$username" --password "$password"
-    - docker build -t "$REGISTRY/$image_to_deploy" ./backend/
-    - docker push "$REGISTRY/$image_to_deploy"
+    - echo "$password" | docker login "$REGISTRY" --username "$username" --password-stdin
+    - docker build -t "$REGISTRY/$IMAGE_TO_DEPLOY" ./backend/
+    - docker push "$REGISTRY/$IMAGE_TO_DEPLOY"
 
 .act-on-change:
   id_tokens:
