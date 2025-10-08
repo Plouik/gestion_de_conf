@@ -43,11 +43,9 @@ variables:
     set -e
     if [ $CHECK_FOR_CHANGE -eq 2 ]; then
       terraform apply main.tfplan
-      ENV_URL=$( terraform output -raw "webapp_url" )
-      echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
-    else
-      echo "Nothing to do."
     fi
+    ENV_URL=$( terraform output -raw "webapp_url" )
+    echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
 
 .act-on-change:
   id_tokens:
