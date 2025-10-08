@@ -1,12 +1,12 @@
 .terraform_init:
-    - terraform init
-      -backend-config="address=${TF_ADDRESS}"
-      -backend-config="lock_address=${TF_ADDRESS}/lock"
-      -backend-config="unlock_address=${TF_ADDRESS}/lock"
-      -backend-config="username=gitlab-ci-token"
-      -backend-config="password=${CI_JOB_TOKEN}"
-      -backend-config="lock_method=POST"
-      -backend-config="unlock_method=DELETE"
+  - terraform init
+    -backend-config="address=${TF_ADDRESS}"
+    -backend-config="lock_address=${TF_ADDRESS}/lock"
+    -backend-config="unlock_address=${TF_ADDRESS}/lock"
+    -backend-config="username=gitlab-ci-token"
+    -backend-config="password=${CI_JOB_TOKEN}"
+    -backend-config="lock_method=POST"
+    -backend-config="unlock_method=DELETE"
 
 .teardown:
   stage: cleanup
@@ -15,20 +15,23 @@
     - terraform destroy --auto-approve
 
 .build_and_push_docker:
-    - creds=$(az acr credential show --resource-group "$RESSOURCE_GROUP" --name "${REGISTRY%%.*}")
-    - username=$( echo "$creds" | jq -r '.username' )
-    - password=$( echo "$creds" | jq -r '.passwords[0].value' )
-    - rm  /root/.docker/config.json #fix super moche 
-    - docker login "$REGISTRY" --username "$username" --password "$password"
-    - docker build -t "$REGISTRY/$IMAGE_TO_DEPLOY" ./backend/
-    - docker push "$REGISTRY/$IMAGE_TO_DEPLOY"
+  - creds=$(az acr credential show --resource-group "$RESSOURCE_GROUP" --name "${REGISTRY%%.*}")
+  - username=$( echo "$creds" | jq -r '.username' )
+  - password=$( echo "$creds" | jq -r '.passwords[0].value' )
+  - docker build -t "$REGISTRY/$IMAGE_TO_DEPLOY" ./backend/
+  - docker push "$REGISTRY/$IMAGE_TO_DEPLOY"
+
+.azure_login:
+  - az login --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
+  - rm  /root/.docker/config.json #fix super moche 
+  - docker login "$REGISTRY" --username "$username" --password "$password"
 
 .act-on-change:
   id_tokens:
     GITLAB_OIDC_TOKEN:
       aud: https://gitlab.com/Plouik/config
   script:
-    - az login --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
+    - !reference [.azure_login]
     - !reference [.build_and_push_docker] 
     - !reference [.terraform_init] 
     - |
@@ -43,4 +46,3 @@
       else
         echo "Nothing to do."
       fi
-
