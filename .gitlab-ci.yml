@@ -8,17 +8,18 @@ variables:
   port: 80
   SECURE_LOG_LEVEL: "info"
 
-include: gitlab/deploy_app.yml
-rules:
-  - if: '$CI_COMMIT_BRANCH == "master"'
-    variables:
-      ENVIRONMENT: "prod" 
-      RESSOURCE_GROUP: "configuration-demo"
-      REGISTRY: "omiomidemoomi.azurecr.io"
-      IDENTITY: "myID"
-  - if: '$CI_COMMIT_BRANCH != "master"'
-    variables:
-      ENVIRONMENT: "dev"
-      RESSOURCE_GROUP: "configuration-demo"
-      REGISTRY: "omiomidemoomi.azurecr.io"
-      IDENTITY: "myID"
+include: 
+  local: gitlab/deploy_app.yml
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      variables:
+        ENVIRONMENT: "prod" 
+        RESSOURCE_GROUP: "configuration-demo"
+        REGISTRY: "omiomidemoomi.azurecr.io"
+        IDENTITY: "myID"
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      variables:
+        ENVIRONMENT: "dev"
+        RESSOURCE_GROUP: "configuration-demo"
+        REGISTRY: "omiomidemoomi.azurecr.io"
+        IDENTITY: "myID"
