@@ -23,8 +23,22 @@
   - creds=$(az acr credential show --resource-group "$RESSOURCE_GROUP" --name "${REGISTRY%%.*}")
   - username=$( echo "$creds" | jq -r '.username' )
   - password=$( echo "$creds" | jq -r '.passwords[0].value' )
-  - rm  /root/.docker/config.json #fix super moche 
+  - rm -f /root/.docker/config.json #fix super moche 
   - docker login "$REGISTRY" --username "$username" --password "$password"
+
+.terraform_pass_or_apply_changes:
+  - |
+    set +e
+    terraform plan -detailed-exitcode --out main.tfplan
+    CHECK_FOR_CHANGE=$?
+    set -e
+    if [ $CHECK_FOR_CHANGE -eq 2 ]; then
+      terraform apply main.tfplan
+      ENV_URL=$( terraform output -raw "container_ipv4_address" )
+      echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
+    else
+      echo "Nothing to do."
+    fi
 
 .act-on-change:
   id_tokens:
@@ -34,15 +48,4 @@
     - !reference [.azure_login]
     - !reference [.build_and_push_docker] 
     - !reference [.terraform_init] 
-    - |
-      set +e
-      terraform plan -detailed-exitcode --out main.tfplan
-      CHECK_FOR_CHANGE=$?
-      set -e
-      if [ $CHECK_FOR_CHANGE -eq 2 ]; then
-        terraform apply main.tfplan
-        ENV_URL=$( terraform output -raw "container_ipv4_address" )
-        echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
-      else
-        echo "Nothing to do."
-      fi
+    - !reference [.terraform_pass_or_apply_changes] 
