@@ -11,14 +11,15 @@
 .teardown:
   stage: cleanup
   script:
-    - !reference [.terraform_init] 
+    - !reference [.terraform_init]
+    - !reference [.azure_and_docker_login]
     - terraform destroy --auto-approve
 
 .build_and_push_docker:
   - docker build -t "$REGISTRY/$IMAGE_TO_DEPLOY" ./backend/
   - docker push "$REGISTRY/$IMAGE_TO_DEPLOY"
 
-.azure_login:
+.azure_and_docker_login:
   - az login --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
   - creds=$(az acr credential show --resource-group "$RESSOURCE_GROUP" --name "${REGISTRY%%.*}")
   - username=$( echo "$creds" | jq -r '.username' )
@@ -45,7 +46,7 @@
     GITLAB_OIDC_TOKEN:
       aud: https://gitlab.com/Plouik/config
   script:
-    - !reference [.azure_login]
+    - !reference [.azure_and_docker_login]
     - !reference [.build_and_push_docker] 
     - !reference [.terraform_init] 
     - !reference [.terraform_pass_or_apply_changes] 
