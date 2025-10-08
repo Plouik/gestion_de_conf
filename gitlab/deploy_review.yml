@@ -6,7 +6,6 @@ variables:
   IMAGE_TO_DEPLOY: "backend:${ENVIRONMENT}"
 
 include: 
-  local: gitlab/tf_vars.yml
   local: gitlab/deploy_app.yml
 
 deploy-review:
