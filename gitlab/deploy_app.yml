@@ -38,8 +38,7 @@
       set -e
       if [ $CHECK_FOR_CHANGE -eq 2 ]; then
         terraform apply main.tfplan
-        jq_filter=".[].$CI_COMMIT_REF_SLUG.ip_address"
-        ENV_URL=$( terraform output -json ip_addresses | jq -r "$jq_filter" )
+        ENV_URL=$( terraform output -raw "container_ipv4_address" )
         echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
       else
         echo "Nothing to do."
