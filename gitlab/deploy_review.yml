@@ -1,4 +1,8 @@
 variables:
+  ENVIRONMENT: "dev"
+  RESSOURCE_GROUP: "configuration-demo"
+  REGISTRY: "omiomidemoomi.azurecr.io"
+  IDENTITY: "myID"
   TF_STATE_NAME: "${ENVIRONMENT}"
   TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"
   TF_VAR_environment: ${ENVIRONMENT}

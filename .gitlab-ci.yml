@@ -14,16 +14,6 @@ include:
   - local: gitlab/deploy_review.yml
     rules:
       - if: '$CI_COMMIT_BRANCH != "master"'
-    variables:
-      ENVIRONMENT: "dev"
-      RESSOURCE_GROUP: "configuration-demo"
-      REGISTRY: "omiomidemoomi.azurecr.io"
-      IDENTITY: "myID"
   - local: gitlab/deploy_prod.yml
-    variables:
-      ENVIRONMENT: "prod" 
-      RESSOURCE_GROUP: "configuration-demo"
-      REGISTRY: "omiomidemoomi.azurecr.io"
-      IDENTITY: "myID"
     rules:
       - if: '$CI_COMMIT_BRANCH == "master"'
