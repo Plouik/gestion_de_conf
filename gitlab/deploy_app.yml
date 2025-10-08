@@ -12,11 +12,10 @@
   stage: cleanup
   script:
     - !reference [.terraform_init]
-    - !reference [.azure_and_docker_login]
     - terraform destroy --auto-approve
 
 .build_and_push_docker:
-  - docker build -t "$REGISTRY/$IMAGE_TO_DEPLOY" ./backend/
+  - docker build -t "$REGISTRY/$IMAGE_TO_DEPLOY" --build-arg ENVIRONMENT=$ENVIRONMENT ./backend/
   - docker push "$REGISTRY/$IMAGE_TO_DEPLOY"
 
 .azure_and_docker_login:
@@ -35,7 +34,7 @@
     set -e
     if [ $CHECK_FOR_CHANGE -eq 2 ]; then
       terraform apply main.tfplan
-      ENV_URL=$( terraform output -raw "container_ipv4_address" )
+      ENV_URL=$( terraform output -raw "webapp_url" )
       echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
     else
       echo "Nothing to do."
