@@ -21,6 +21,7 @@
     - username=$( echo "$creds" | jq -r '.username' )
     - password=$( echo "$creds" | jq -r '.passwords[0].value' )
     - echo "$password"
+    - echo "$REGISTRY"
     - docker login "$REGISTRY" --username "$username" --password "$password"
     - docker build -t "$REGISTRY/$image_to_deploy" ./backend/
     - docker push "$REGISTRY/$image_to_deploy"
