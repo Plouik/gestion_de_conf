@@ -6,7 +6,7 @@ stages:
 
 variables:
   port: 80
-  SECURE_LOG_LEVEL: "info"
+  SECURE_LOG_LEVEL: "warn"
 
 include: 
   - local: gitlab/deploy_review.yml
