@@ -1,9 +1,9 @@
 {
-  "name": "gitlab-federated-identities",
-  "issuer": "https://gitlab.example.com",
-  "subject": "project_path:Plouik/config:ref_type:branch:ref:*'",
+  "name": "gitlab-federated-identity",
+  "issuer": "https://gitlab.com",
+  "subject": "project_path:Plouik/config:ref_type:branch:ref:azurewf",
   "description": "GitLab service account federated identity",
   "audiences": [
-    "https://gitlab.example.com"
+    "https://gitlab.com/Plouik/config"
   ]
 }

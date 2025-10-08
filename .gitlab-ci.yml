@@ -10,15 +10,6 @@ variables:
   AZURE_CLIENT_ID: "cdaf2b56-c004-416d-9131-d0dad6d5a726"
   AZURE_TENANT_ID: "b7b023b8-7c32-4c02-92a6-c8cdaa1d189c"
 
-auth:
-  stage: .pre
-  id_tokens:
-    GITLAB_OIDC_TOKEN:
-      aud: https://gitlab.com/Plouik/config
-  script:
-    - az login --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
-    - az account show
-
 include: 
   - local: gitlab/deploy_review.yml
     rules:
