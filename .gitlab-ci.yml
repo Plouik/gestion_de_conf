@@ -11,6 +11,7 @@ variables:
   AZURE_TENANT_ID: "b7b023b8-7c32-4c02-92a6-c8cdaa1d189c"
 
 auth:
+  stage: .pre
   id_tokens:
     GITLAB_OIDC_TOKEN:
       aud: https://gitlab.com
