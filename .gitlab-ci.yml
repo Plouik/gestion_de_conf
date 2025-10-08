@@ -15,15 +15,14 @@ include:
       RESSOURCE_GROUP: "configuration-demo"
       REGISTRY: "omiomidemoomi.azurecr.io"
       IDENTITY: "myID"
-    only:
-      - branches
-    except:
-      - master
+    rules:
+      - if: '$CI_COMMIT_BRANCH != "master"'
+      
   - local: gitlab/deploy_prod.yml
     variables:
       ENVIRONMENT: "prod" 
       RESSOURCE_GROUP: "configuration-demo"
       REGISTRY: "omiomidemoomi.azurecr.io"
       IDENTITY: "myID"
-    only:
-      - master
+    rules:
+      - if: '$CI_COMMIT_BRANCH == "master"'
