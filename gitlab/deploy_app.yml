@@ -17,8 +17,10 @@
 .build_and_push_docker:
     # - echo "${REGISTRY%%.*}"
     - creds=$(az acr credential show --resource-group "$RESSOURCE_GROUP" --name "omiomidemoomi")
+    - az acr credential show --resource-group "$ressource_group" --name "$registry_name"
     - username=$( echo "$creds" | jq -r '.username' )
     - password=$( echo "$creds" | jq -r '.passwords[0].value' )
+    - echo "$password"
     - docker login "$REGISTRY" --username "$username" --password "$password"
     - docker build -t "$REGISTRY/$image_to_deploy" ./backend/
     - docker push "$REGISTRY/$image_to_deploy"
