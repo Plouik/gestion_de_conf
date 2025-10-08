@@ -1,0 +1,31 @@
+deploy-review:
+  extends: .act-on-change
+  stage: deploy
+  variables:
+    TF_VAR_my_apps: '[{Environment:"$CI_COMMIT_REF_SLUG",port:"$port"}]'
+    TF_STATE_NAME: "${CI_COMMIT_REF_SLUG}"
+    TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"  
+  artifacts:
+    reports:
+      dotenv: envurl.env
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    url: $DYNAMIC_ENVIRONMENT_URL
+    on_stop: stop_review
+
+stop_review:
+  extends: .teardown
+  needs:
+    - deploy-review
+  stage: review
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    action: stop
+  variables:
+    TF_VAR_my_apps: '[{Environment:"$CI_COMMIT_REF_SLUG",port:"$port"}]'
+    TF_STATE_NAME: "${CI_COMMIT_REF_SLUG}"
+    TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"  
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      when: manual

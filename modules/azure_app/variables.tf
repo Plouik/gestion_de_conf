@@ -1,8 +1,15 @@
-variable "container_name_prefix" {
+variable "environment" {
   type        = string
   description = "Prefix of the container name that's combined with a random value so name is unique in your Azure subscription."
-  default     = "aci"
+  default     = "DEV"
 }
+
+variable "port" {
+  type        = number
+  description = "Port to open on the container and the public IP address."
+  default     = 80
+}
+
 
 variable "image" {
   type        = string
@@ -16,10 +23,14 @@ variable "registry" {
   default     = "omiomidemoomi.azurecr.io"
 }
 
-variable "port" {
-  type        = number
-  description = "Port to open on the container and the public IP address."
-  default     = 80
+variable "identity_username" {
+  type        = string
+  default     = "myID"
+}
+
+variable "ressource_group" {
+  type        = string
+  default     = "configuration-demo"
 }
 
 variable "cpu_cores" {
@@ -42,14 +53,4 @@ variable "restart_policy" {
     condition     = contains(["Always", "Never", "OnFailure"], var.restart_policy)
     error_message = "The restart_policy must be one of the following: Always, Never, OnFailure."
   }
-}
-
-variable "identity_username" {
-  type        = string
-  default     = "myID"
-}
-
-variable "identity_ressource_group" {
-  type        = string
-  default     = "configuration-demo"
 }

@@ -1,15 +1,24 @@
 stages:
+  - build
   - deploy
   - review
   - cleanup
 
-
-
 variables:
   port: 80
   SECURE_LOG_LEVEL: "info"
-  RESSOURCE_GROUP: "configuration-demo"
-  REGISTRY_NAME: "omiomidemoomi"
-  REGISTRY_FQDN: "${REGISTRY_NAME}.azurecr.io"
 
-# include: gitlab/deploy_change.yml
+include: gitlab/deploy_app.yml
+rules:
+  - if: '$CI_COMMIT_BRANCH == "master"'
+    variables:
+      ENVIRONMENT: "prod" 
+      RESSOURCE_GROUP: "configuration-demo"
+      REGISTRY: "omiomidemoomi.azurecr.io"
+      IDENTITY: "myID"
+  - if: '$CI_COMMIT_BRANCH != "master"'
+    variables:
+      ENVIRONMENT: "dev"
+      RESSOURCE_GROUP: "configuration-demo"
+      REGISTRY: "omiomidemoomi.azurecr.io"
+      IDENTITY: "myID"

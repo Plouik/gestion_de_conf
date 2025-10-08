@@ -1,0 +1,28 @@
+deploy-prod:
+  extends: .act-on-change
+  stage: deploy
+  variables:
+    TF_VAR_my_apps: '[{Environment:"production",port:"$port"}]'
+    TF_STATE_NAME: "production"
+    TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"  
+  artifacts:
+    reports:
+      dotenv: envurl.env
+  environment:
+    name: production
+    url: $DYNAMIC_ENVIRONMENT_URL
+    on_stop: stop_prod
+
+stop_prod:
+  extends: .teardown
+  needs:
+    - deploy-prod
+  stage: review
+  environment:
+    name: production
+    action: stop
+  variables:
+    TF_VAR_my_apps: '[{Environment:"production",port:"$port"}]'
+    TF_STATE_NAME: "production"
+    TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"  
+  allow_failure: true
