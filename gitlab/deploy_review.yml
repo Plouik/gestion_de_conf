@@ -1,5 +1,5 @@
 variables:
-  ENVIRONMENT: "dev"
+  ENVIRONMENT: "$CI_COMMIT_REF_SLUG"
   RESSOURCE_GROUP: "configuration-demo"
   REGISTRY: "omiomidemoomi.azurecr.io"
   IDENTITY: "myID"
