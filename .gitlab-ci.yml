@@ -19,7 +19,7 @@ include:
       - branches
     except:
       - master
-  - local: gitlab/deploy_prod.ym
+  - local: gitlab/deploy_prod.yml
     variables:
       ENVIRONMENT: "prod" 
       RESSOURCE_GROUP: "configuration-demo"
