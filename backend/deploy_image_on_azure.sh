@@ -3,7 +3,7 @@ set -eu
 ressource_group="configuration-demo"
 registry_name="omiomidemoomi"
 registry_fqdn="$registry_name.azurecr.io"
-image_to_deploy="configuration-backend:latest"
+image_to_deploy="configuration-backend:latest" 
 
 #creatre a container registry
 creds=$(az acr credential show --resource-group "$ressource_group" --name "$registry_name")
