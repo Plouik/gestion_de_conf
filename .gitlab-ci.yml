@@ -1,6 +1,6 @@
 variables:
   TF_VAR_ENVIRONMENT: "PROD"
-  TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_VAR_environment}"
+  TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_VAR_ENVIRONMENT}"
 
 
 .terraform_init:
