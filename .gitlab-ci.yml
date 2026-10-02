@@ -1,9 +1,17 @@
 variables:
   TF_VAR_ENVIRONMENT: "PROD"
+  TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_VAR_environment}"
 
 
 .terraform_init:
-    - terraform init 
+  - terraform init
+    -backend-config="address=${TF_ADDRESS}"
+    -backend-config="lock_address=${TF_ADDRESS}/lock"
+    -backend-config="unlock_address=${TF_ADDRESS}/lock"
+    -backend-config="username=gitlab-ci-token"
+    -backend-config="password=${CI_JOB_TOKEN}"
+    -backend-config="lock_method=POST"
+    -backend-config="unlock_method=DELETE"
 
 build:
   stage: build
