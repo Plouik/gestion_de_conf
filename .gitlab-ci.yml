@@ -1,0 +1,22 @@
+variables:
+  ENVIRONMENT: "PROD"
+
+build:
+  stage: build
+  script: 
+   - docker-compose up --build 
+
+test:
+  stage: test
+  script: 
+    - |
+       output=$( curl http://localhost:80/ );
+       echo "Testing that or server is running as $ENVIRONMENT. Current value is $output";
+       echo $output | grep -o "$ENVIRONMENT";
+
+teardown:
+  stage: .post
+  script: 
+   - docker-compose down
+  when: always
+
