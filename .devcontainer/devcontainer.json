@@ -13,7 +13,7 @@
 		
 	},
 	"remoteUser": "root",
-	"postCreateCommand": "./.devcontainer/gitlab_runner_configure.sh && ./.devcontainer/git_configure.sh",
+	"postCreateCommand": "./.devcontainer/git_configure.sh && ./.devcontainer/gitlab_runner_configure.sh",
 	"containerEnv": {"GH_TOKEN": "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", "RUNNER_TOKEN": "glrt-qju2BJj8dk4i5Ed4AE5mR2M6MQpvOjEKcDoxOGQ5cWQKdDozCnU6MnNoYnYc.01.1o0q64byb"}
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
