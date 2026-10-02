@@ -1,6 +1,8 @@
 services:
   backend:
     build: backend
+    args:
+      - ENVIRONMENT=${ENVIRONMENT:-DEV}
   frontend:
     build: frontend
     ports:
