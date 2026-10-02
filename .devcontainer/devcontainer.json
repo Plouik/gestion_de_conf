@@ -13,7 +13,9 @@
 		
 	},
 	"remoteUser": "root",
-	"postCreateCommand": "source secrets && ./.devcontainer/git_configure.sh && ./.devcontainer/gitlab_runner_configure.sh",
+	"runArgs": ["--env-file","secrets.env"],
+	"postCreateCommand": "./.devcontainer/git_configure.sh && ./.devcontainer/gitlab_runner_configure.sh",
+	"postStartCommand": "nohup /usr/local/bin/gitlab-runner run --config /root/gitlab-runner/config.toml --working-directory /root/gitlab-runner >> /root/gitlab-runner/runner.log 2>&1 < /dev/null &",
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],e
 
