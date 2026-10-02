@@ -14,10 +14,12 @@ curl --fail --location --retry 3 --output /usr/local/bin/gitlab-runner https://g
 chmod +x /usr/local/bin/gitlab-runner
 
 mkdir -p /root/gitlab-runner
-/usr/local/bin/gitlab-runner register \
+gitlab-runner install --user=root --working-directory=/root/gitlab-runner
+gitlab-runner register \
     --non-interactive \
-    --config /root/gitlab-runner/config.toml \
     --url https://gitlab.com \
     --executor "shell" \
     --token "$RUNNER_TOKEN" \
-    --description "devcontainer-runner"
+    --description "devcontainer-runner" 
+gitlab-runner run > /dev/null
+
