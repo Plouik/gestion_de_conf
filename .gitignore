@@ -5,3 +5,4 @@
 .devcontainer/terraform.tfstate*
 builds/*
 secrets.env
+cache
