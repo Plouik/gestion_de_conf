@@ -24,7 +24,7 @@ include:
 
 tf-tflint:
   rules:
-    - if: '$TF_TFLINT_DISABLED == "true"'
+    - if: '$TF_TFLINT_DISABLED == "true"' 
       when: never
     - when: on_success
 
