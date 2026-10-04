@@ -3,27 +3,25 @@
 {
 	"name": "Debian",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
+	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers-extra/features/apt-packages:1": {},
-		"ghcr.io/devcontainers/features/github-cli:1": {},
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
-		"ghcr.io/devcontainers-extra/features/ansible:2": {}, 
-		"ghcr.io/hspaans/devcontainer-features/ansible-lint:2": {},
 		"ghcr.io/devcontainers/features/terraform:1": {} 
 		
 	},
 	"remoteUser": "root",
-	"postCreateCommand": "./.devcontainer/gitlab_runner_configure.sh && ./.devcontainer/git_configure.sh",
-	"postStartCommand": "gitlab-runner run -d '/root/gitlab-runner' &",
-	"containerEnv": {"GH_TOKEN": "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", "RUNNER_TOKEN": "glrt-fOS6P_SNyG3o4460R10vpm86MQpwOjE4ZDlxZAp0OjMKdToyc2hidhg.01.1j09m32vc"}
-	
+	"runArgs": ["--env-file","secrets.env"],
+	"postCreateCommand": "./.devcontainer/git_configure.sh && ./.devcontainer/gitlab_runner_configure.sh",
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],e
 
 	// Configure tool-specific properties.
-	// "customizations": {},
-
+	"customizations": {
+		"vscode": { 
+			"extensions": ["gitlab.gitlab-workflow"]
+		}
+	}
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 }

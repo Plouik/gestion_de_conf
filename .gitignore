@@ -1,2 +1,7 @@
 .terraform/*
 .terraform.lock.hcl
+.devcontainer/gitlab-runner/terraform.tfstate*
+.devcontainer/.terraform/
+.devcontainer/terraform.tfstate*
+builds/*
+secrets.env

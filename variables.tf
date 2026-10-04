@@ -1,10 +1,10 @@
 variable "my_apps" {
   type = list(object({
-    Environment = string
+    ENVIRONMENT = string
     port         = number
   }))
   default = [
-    { Environment = "prod", port = 80 },
-    { Environment = "dev", port = 7000 }
+    { ENVIRONMENT = "prod", port = 80 },
+    { ENVIRONMENT = "dev", port = 7000 }
   ]
 }

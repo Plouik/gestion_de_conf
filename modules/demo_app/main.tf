@@ -1,5 +1,5 @@
 resource "docker_image" "frontend" {
-  name         = "frontend-${var.Environment}"
+  name         = "frontend-${var.ENVIRONMENT}"
   build {
     context = "./frontend"
   }
@@ -7,11 +7,11 @@ resource "docker_image" "frontend" {
 }
 
 resource "docker_image" "backend" {
-  name         = "backend-${var.Environment}"
+  name         = "backend-${var.ENVIRONMENT}"
   build {
     context = "./backend"
     build_args = {
-      ENVIRONMENT = var.Environment
+      ENVIRONMENT = var.ENVIRONMENT
     }
   }
   keep_locally = false
@@ -19,7 +19,7 @@ resource "docker_image" "backend" {
 
 resource "docker_container" "frontend" {
   image = docker_image.frontend.image_id
-  name  = "frontend-${var.Environment}"
+  name  = "frontend-${var.ENVIRONMENT}"
   ports {
     internal = 80
     external = var.port
@@ -32,12 +32,12 @@ resource "docker_container" "frontend" {
 
 resource "docker_container" "backend" {
   image = docker_image.backend.image_id
-  name  = "backend-${var.Environment}"
+  name  = "backend-${var.ENVIRONMENT}"
   networks_advanced {
     name = docker_network.configuration_network.name
   }
 }
 
 resource "docker_network" "configuration_network" {
-  name = "configuration_network-${var.Environment}"
+  name = "configuration_network-${var.ENVIRONMENT}"
 }
