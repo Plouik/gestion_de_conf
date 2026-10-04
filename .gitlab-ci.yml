@@ -3,6 +3,8 @@ include:
     inputs:
       review-enabled: true
       prod-enabled: true
+      tflint-disabled: false
+      trivy-disabled: false
 
 .tf-workspace:
   parallel:
@@ -11,3 +13,23 @@ include:
         TF_VAR_my_apps: '[{"ENVIRONMENT":"dev","port":7000}]'
       - TF_ENVIRONMENT_NAMESPACE: "/prod"
         TF_VAR_my_apps: '[{"ENVIRONMENT":"prod","port":80}]'
+
+.tf-create:
+  tags:
+    - devcontainer-runner
+
+.tf-destroy:
+  tags:
+    - devcontainer-runner
+
+tf-tflint:
+  rules:
+    - if: '$TF_TFLINT_DISABLED == "true"'
+      when: never
+    - when: on_success
+
+tf-trivy:
+  rules:
+    - if: '$TF_TRIVY_DISABLED == "true"'
+      when: never
+    - when: on_success
