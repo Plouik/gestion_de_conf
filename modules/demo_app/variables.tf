@@ -1,4 +1,4 @@
-variable "Environment" {
+variable "ENVIRONMENT" {
   description = "dev/prod"
   type        = string
   default     = "dev"

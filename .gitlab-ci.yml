@@ -5,7 +5,7 @@
     strategy: depend
   parallel:
       matrix:
-        - Environment: "prod"
+        - ENVIRONMENT: "prod"
           port: 80
-        - Environment: "dev"
+        - ENVIRONMENT: "dev"
           port: 7000

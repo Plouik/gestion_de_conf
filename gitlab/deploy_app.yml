@@ -1,6 +1,6 @@
 variables:
-  TF_VAR_my_apps: '[{Environment:"$Environment",port:"$port"}]'
-  TF_STATE_NAME: "${Environment}"
+  TF_VAR_my_apps: '[{ENVIRONMENT:"$ENVIRONMENT",port:"$port"}]'
+  TF_STATE_NAME: "${ENVIRONMENT}"
   TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"  
 
 .terraform_init:
@@ -24,8 +24,8 @@ test:
   script: 
     - |
        output=$( curl http://localhost:$port/ );
-       echo "Testing that or server is running as $Environment on port $port. Current value is $output";
-       echo $output | grep -o "$Environment";
+       echo "Testing that or server is running as $ENVIRONMENT on port $port. Current value is $output";
+       echo $output | grep -o "$ENVIRONMENT";
 
 teardown:
   stage: .post
