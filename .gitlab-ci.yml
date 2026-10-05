@@ -13,11 +13,29 @@ variables:
     -backend-config="lock_method=POST"
     -backend-config="unlock_method=DELETE"
 
-build:
+plan:
+  stage: .pre
+  script:
+    - !reference [.terraform_init] 
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - tfplan
+    expire_in: 1 week
+
+apply:
   stage: build
-  script: 
+  script:
    - !reference [.terraform_init] 
-   - terraform apply -auto-approve
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - plan
+  when: manual
+# build:
+#   stage: build
+#   script: 
+#    - !reference [.terraform_init] 
+#    - terraform apply -auto-approve
 
 test:
   stage: test
