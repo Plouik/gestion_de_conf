@@ -1,5 +1,5 @@
 variables:
-  TF_VAR_ENVIRONMENT: "PROD"
+  TF_VAR_ENVIRONMENT: "prod"
   TF_HTTP_PASSWORD: "${CI_JOB_TOKEN}"
   TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_VAR_ENVIRONMENT}"
 

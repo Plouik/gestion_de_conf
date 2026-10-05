@@ -4,7 +4,7 @@ variable "my_apps" {
     port         = number
   }))
   default = [
-    { ENVIRONMENT = "PROD", port = 80 },
-    { ENVIRONMENT = "DEV", port = 7000 }
+    { ENVIRONMENT = "prod", port = 80 },
+    { ENVIRONMENT = "dev", port = 7000 }
   ]
 }
