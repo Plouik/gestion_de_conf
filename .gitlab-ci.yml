@@ -1,5 +1,6 @@
 variables:
   TF_VAR_ENVIRONMENT: "PROD"
+  TF_HTTP_PASSWORD: "${CI_JOB_TOKEN}"
   TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_VAR_ENVIRONMENT}"
 
 
@@ -9,9 +10,9 @@ variables:
     -backend-config="lock_address=${TF_ADDRESS}/lock"
     -backend-config="unlock_address=${TF_ADDRESS}/lock"
     -backend-config="username=gitlab-ci-token"
-    -backend-config="password=${CI_JOB_TOKEN}"
     -backend-config="lock_method=POST"
     -backend-config="unlock_method=DELETE"
+
 
 plan:
   stage: .pre
@@ -30,7 +31,7 @@ apply:
     - terraform apply -auto-approve tfplan
   dependencies:
     - plan
-  when: manual
+  # when: manual
 # build:
 #   stage: build
 #   script: 
@@ -51,5 +52,5 @@ teardown:
   script: 
    - !reference [.terraform_init] 
    - terraform destroy -auto-approve
-  when: manual
+  when: always
 
