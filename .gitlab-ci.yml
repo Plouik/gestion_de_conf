@@ -2,7 +2,6 @@ include:
   - component: $CI_SERVER_FQDN/to-be-continuous/terraform/gitlab-ci-terraform@9.5.1
     inputs:
       review-enabled: true
-      prod-enabled: true
       tflint-disabled: false
       trivy-disabled: false
 
