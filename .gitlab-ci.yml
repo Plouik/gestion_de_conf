@@ -44,11 +44,12 @@ test:
        output=$( curl http://localhost:80/ );
        echo "Testing that or server is running as $TF_VAR_ENVIRONMENT. Current value is $output";
        echo $output | grep -o "$TF_VAR_ENVIRONMENT";
+  when: manual
 
 teardown:
   stage: .post
   script: 
    - !reference [.terraform_init] 
    - terraform destroy -auto-approve
-  when: always
+  when: manual
 
