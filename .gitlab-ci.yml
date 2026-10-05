@@ -31,7 +31,7 @@ apply:
     - terraform apply -auto-approve tfplan
   dependencies:
     - plan
-  # when: manual
+  when: manual
 # build:
 #   stage: build
 #   script: 
@@ -52,5 +52,5 @@ teardown:
   script: 
    - !reference [.terraform_init] 
    - terraform destroy -auto-approve
-  when: always
+  when: manual
 
