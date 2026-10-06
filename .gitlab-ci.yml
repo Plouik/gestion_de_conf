@@ -1,35 +1,46 @@
 include:
-  - component: $CI_SERVER_FQDN/to-be-continuous/terraform/gitlab-ci-terraform@9.5.1
+  - component: $CI_SERVER_FQDN/components/opentofu/full-pipeline@4.9.0
     inputs:
-      review-enabled: true
-      tflint-disabled: false
-      trivy-disabled: false
+      version: "4.9.0"
+      opentofu_version: "1.12.6"
+      state_name: "$TF_STATE_NAME"
+      auto_define_backend: true
   - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0
 
-.tf-workspace:
-  parallel:
+stages: [validate, test, build, deploy, cleanup]
+
+.environment-matrix:
+  parallel: &environment-matrix
     matrix:
-      - TF_ENVIRONMENT_NAMESPACE: "/dev"
+      - TF_STATE_NAME: "dev"
         TF_VAR_my_apps: '[{"ENVIRONMENT":"dev","port":7000}]'
-      - TF_ENVIRONMENT_NAMESPACE: "/prod"
+      - TF_STATE_NAME: "prod"
         TF_VAR_my_apps: '[{"ENVIRONMENT":"prod","port":80}]'
 
-.tf-create:
+plan:
+  parallel: *environment-matrix
+
+apply:
+  parallel: *environment-matrix
+  needs:
+    - job: plan
+      parallel:
+        matrix:
+          - TF_STATE_NAME: ['$[[ matrix.TF_STATE_NAME ]]']
   tags:
     - devcontainer
 
-.tf-destroy:
+destroy:
+  parallel: *environment-matrix
   tags:
     - devcontainer
 
 tf-tflint:
+  image: ghcr.io/terraform-linters/tflint:v0.64.0
+  stage: validate
+  script:
+    - tflint --init
+    - tflint --recursive
   rules:
-    - if: '$TF_TFLINT_DISABLED == "true"' 
-      when: never
     - when: on_success
 
-tf-trivy:
-  rules:
-    - if: '$TF_TRIVY_DISABLED == "true"'
-      when: never
-    - when: on_success
