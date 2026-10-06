@@ -55,6 +55,6 @@ terraform_apply:
   - !reference [.terraform_init] 
   - |
     ls
-    terraform apply --auto-approve 
+    terraform apply "tfplan"
     ENV_URL=$( terraform output -raw "webapp_url" )
     echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" > envurl.env
