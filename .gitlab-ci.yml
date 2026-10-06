@@ -1,36 +1,35 @@
 include:
-  - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0
-  - component: gitlab.com/components/opentofu/full-pipeline@4.9.0
+  - component: $CI_SERVER_FQDN/to-be-continuous/terraform/gitlab-ci-terraform@9.5.1
     inputs:
-      opentofu_version: 1.12.6
-      state_name: dev
-      cache_policy: pull-push
-      auto_define_backend: true
-      var_file: env/dev.tfvars
-      apply_rules:
-        - when: always
-      destroy_rules:
-        - when: always
+      review-enabled: true
+      tflint-disabled: false
+      trivy-disabled: false
+  - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0
 
-stages: [validate, test, build, deploy, cleanup]
+.tf-workspace:
+  parallel:
+    matrix:
+      - TF_ENVIRONMENT_NAMESPACE: "/dev"
+        TF_VAR_my_apps: '[{"ENVIRONMENT":"dev","port":7000}]'
+      - TF_ENVIRONMENT_NAMESPACE: "/prod"
+        TF_VAR_my_apps: '[{"ENVIRONMENT":"prod","port":80}]'
+
+.tf-create:
+  tags:
+    - devcontainer
+
+.tf-destroy:
+  tags:
+    - devcontainer
 
 tf-tflint:
-  image: ghcr.io/terraform-linters/tflint:v0.64.0
-  stage: validate
-  script:
-    - tflint --init
-    - tflint --recursive
   rules:
+    - if: '$TF_TFLINT_DISABLED == "true"' 
+      when: never
     - when: on_success
 
-
-dev-apply:
-  tags:
-    - devcontainer
-
-dev-destroy:
-  tags:
-    - devcontainer
-
-
-
+tf-trivy:
+  rules:
+    - if: '$TF_TRIVY_DISABLED == "true"'
+      when: never
+    - when: on_success
