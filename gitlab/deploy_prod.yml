@@ -20,7 +20,8 @@ deploy-prod:
     on_stop: stop_prod
 
 stop_prod:
-  extends: .teardown
+  script:
+    - terraform destroy --auto-approve
   needs:
     - deploy-prod
   stage: review
