@@ -5,7 +5,6 @@ include:
       opentofu_version: 1.12.6
       job_name_prefix: 'dev-'
       state_name: dev
-      environment_name: dev
       var_file: env/dev.tfvars
 
   - component: gitlab.com/components/opentofu/full-pipeline@4.9.0
@@ -13,10 +12,9 @@ include:
       opentofu_version: 1.12.6
       job_name_prefix: 'prod-'
       state_name: prod
-      environment_name: production
       var_file: env/prod.tfvars
 
-# stages: [validate, test, build, deploy, cleanup]
+stages: [validate, test, build, deploy, cleanup]
 
 # tf-tflint:
 #   image: ghcr.io/terraform-linters/tflint:v0.64.0
