@@ -26,6 +26,6 @@ stop_prod:
     - deploy-prod
   stage: review
   environment:
-    name: production
+    name: $ENVIRONMENT
     action: stop
   allow_failure: true
