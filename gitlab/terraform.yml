@@ -1,7 +1,6 @@
 variables:
   TF_STATE_NAME: "${ENVIRONMENT}"
   TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"
-  # TF_VAR_environment: ${ENVIRONMENT}
   TF_VAR_my_apps: '[{ENVIRONMENT:"$ENVIRONMENT",port:"$port"}]'
 
 .terraform_init:
@@ -14,16 +13,21 @@ variables:
       -backend-config="lock_method=POST"
       -backend-config="unlock_method=DELETE"
 
-
-
-.terraform_pass_or_apply_changes:
+.terraform_report_changes:
+  - !reference [.terraform_init] 
   - |
     set +e
-    terraform plan -detailed-exitcode --out main.tfplan
+    terraform plan -detailed-exitcode --out tfplan
     CHECK_FOR_CHANGE=$?
     set -e
     if [ $CHECK_FOR_CHANGE -eq 2 ]; then
-      terraform apply main.tfplan
+      echo "TERRAFORM_HAS_CHANGED=true" >> changes.env
+      terraform show -json tfplan > plan.json
     fi
+
+.terraform_apply_changes:
+  - !reference [.terraform_init] 
+  - |
+    terraform apply tfplan
     ENV_URL=$( terraform output -raw "webapp_url" )
     echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env

@@ -3,19 +3,11 @@
   # TF_VAR_image: "$IMAGE_TO_DEPLOY"
   # TF_VAR_identity_username: "$IDENTITY"  
 
-include: 
-  local: gitlab/terraform.yml
 
 # .build_and_push_docker:
 #   - docker build -t "$REGISTRY/$IMAGE_TO_DEPLOY" --build-arg ENVIRONMENT=$ENVIRONMENT ./backend/
 #   - docker push "$REGISTRY/$IMAGE_TO_DEPLOY"
-test:
-  stage: test
-  script: 
-    - |
-       output=$( curl http://localhost:$port/ );
-       echo "Testing that or server is running as $ENVIRONMENT on port $port. Current value is $output";
-       echo $output | grep -o "$ENVIRONMENT";
+
 
 # .azure_and_docker_login:
 #   - az login --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
@@ -24,18 +16,32 @@ test:
 #   - password=$( echo "$creds" | jq -r '.passwords[0].value' )
 #   - rm -f /root/.docker/config.json #fix super moche 
 #   - docker login "$REGISTRY" --username "$username" --password "$password"
-    
 
-act-on-change:
-  stage: build
-  # id_tokens:
-  #   GITLAB_OIDC_TOKEN:
-  #     aud: https://gitlab.com/Plouik/config
+ 
+include: 
+  local: gitlab/terraform.yml   
+
+terraform_check_for_changes:
+  stage: .pre
+  extends: terraform_report_changes
+  artifacts:
+    paths:
+      - tfplan
+    reports:
+      terraform: plan.json
+    reports:
+      dotenv: changes.env
+
+
+terraform_apply:
+  stage: .deploy
   script:
-    # - !reference [.azure_and_docker_login]
-    # - !reference [.build_and_push_docker] 
-    - !reference [.terraform_init] 
-    - !reference [.terraform_pass_or_apply_changes] 
+    - !reference [.terraform_apply_changes] 
+  needs:
+    - job: terraform_check_for_changes
+      artifacts: true
+  rules:
+    - if: $TERRAFORM_HAS_CHANGED == "true"
   artifacts:
     reports:
       dotenv: envurl.env
@@ -43,3 +49,11 @@ act-on-change:
     name: $UPSTREAM_ENVIRONMENT_NAME
     url: $DYNAMIC_ENVIRONMENT_URL
   
+
+test:
+  stage: test
+  script: 
+    - |
+       output=$( curl http://localhost:$port/ );
+       echo "Testing that or server is running as $ENVIRONMENT on port $port. Current value is $output";
+       echo $output | grep -o "$ENVIRONMENT";
