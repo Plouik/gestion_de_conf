@@ -37,7 +37,7 @@ apply:
     - devcontainer
 
 destroy:
-  parallel: !reference [.environment-matrix, parallel]
+  extends: [.opentofu:destroy, .environment-matrix]
   tags:
     - devcontainer
 
