@@ -1,5 +1,5 @@
 include:
-  - component: $CI_SERVER_FQDN/components/opentofu/full-pipeline@4.9.0
+  - component: $CI_SERVER_FQDN/components/opentofu/job-templates@4.9.0
     inputs:
       version: "4.9.0"
       opentofu_version: "1.12.6"
