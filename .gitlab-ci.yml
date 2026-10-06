@@ -9,7 +9,7 @@ include:
   parallel:
     matrix:
       - TF_ENVIRONMENT_NAMESPACE: "/dev"
-        TF_VAR_my_apps: '[{"ENVIRONMENT":"dev","port":7000}]'
+        TF_VAR_my_apps: '[{"ENVIRONMENT":"dev","port":7000}]' 
       - TF_ENVIRONMENT_NAMESPACE: "/prod"
         TF_VAR_my_apps: '[{"ENVIRONMENT":"prod","port":80}]'
 
