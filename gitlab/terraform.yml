@@ -12,7 +12,6 @@ terraform_check_for_changes:
       - tfplan
     reports:
       terraform: plan.json
-    reports:
       dotenv: changes.env
 
 terraform_apply:
