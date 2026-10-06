@@ -1,34 +1,24 @@
 variables:
-  ENVIRONMENT: "$CI_COMMIT_REF_SLUG"
+  ENVIRONMENT: "review/$CI_COMMIT_REF_SLUG"
   port: 7000
-  # RESSOURCE_GROUP: "configuration-demo"
-  # REGISTRY: "omiomidemoomi.azurecr.io"
-  # IDENTITY: "myID"
-  # IMAGE_TO_DEPLOY: "backend:${ENVIRONMENT}"
-
-include: 
-  local: gitlab/deploy_app.yml
 
 deploy-review:
-  extends: .act-on-change
   stage: deploy
-  artifacts:
-    reports:
-      dotenv: envurl.env
+  trigger:
+    include:
+      - local: gitlab/deploy_app.yml
+    strategy: depend
   environment:
-    name: review/$CI_COMMIT_REF_SLUG
-    url: $DYNAMIC_ENVIRONMENT_URL
+    name: $ENVIRONMENT
     on_stop: stop_review
 
 stop_review:
-  extends: .teardown
-  needs:
-    - deploy-review
-  stage: review
+  stage: cleanup
+  trigger:
+    include:
+      - local: gitlab/destroy_app.yml
+    strategy: depend
   environment:
-    name: review/$CI_COMMIT_REF_SLUG
+    name: $ENVIRONMENT
     action: stop
-  allow_failure: true
-  rules:
-    - if: '$CI_COMMIT_BRANCH'
-      when: manual
+  when: manual

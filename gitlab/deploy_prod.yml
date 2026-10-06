@@ -1,5 +1,5 @@
 variables:
-  ENVIRONMENT: "prod" 
+  ENVIRONMENT: "production" 
   port: 80
   # RESSOURCE_GROUP: "configuration-demo"
   # REGISTRY: "omiomidemoomi.azurecr.io"
@@ -15,7 +15,6 @@ deploy-prod:
     include:
       - local: gitlab/deploy_app.yml
     strategy: depend
-  # extends: .act-on-change
   environment:
     name: $ENVIRONMENT
     on_stop: stop_prod
@@ -26,6 +25,7 @@ stop_prod:
   trigger:
     include:
       - local: gitlab/destroy_app.yml
+    strategy: depend
   environment:
     name: $ENVIRONMENT
     action: stop
