@@ -23,7 +23,8 @@ include:
 
 terraform_check_for_changes:
   stage: .pre
-  extends: .terraform_report_changes
+  script:
+    - !reference [.terraform_report_changes]
   artifacts:
     paths:
       - tfplan

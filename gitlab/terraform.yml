@@ -21,7 +21,7 @@ variables:
     CHECK_FOR_CHANGE=$?
     set -e
     if [ $CHECK_FOR_CHANGE -eq 2 ]; then
-      echo "TERRAFORM_HAS_CHANGED=true" >> changes.env
+      echo "TERRAFORM_HAS_CHANGED=true" > changes.env
       terraform show -json tfplan > plan.json
     fi
 
@@ -30,4 +30,4 @@ variables:
   - |
     terraform apply tfplan
     ENV_URL=$( terraform output -raw "webapp_url" )
-    echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
+    echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" > envurl.env
