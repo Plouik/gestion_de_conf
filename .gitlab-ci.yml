@@ -7,6 +7,13 @@ include:
       state_name: dev
       auto_define_backend: true
       var_file: env/dev.tfvars
+      apply_rules:
+        - if: $CI_COMMIT_BRANCH == "main"
+          when: manual
+      create_destroy_job: true
+      destroy_rules:
+        - if: $CI_COMMIT_BRANCH == "main"
+          when: manual
 
   - component: gitlab.com/components/opentofu/full-pipeline@4.9.0
     inputs:
@@ -15,6 +22,11 @@ include:
       state_name: prod
       auto_define_backend: true
       var_file: env/prod.tfvars
+      apply_rules:
+          when: alway
+      create_destroy_job: true
+      destroy_rules:
+          when: alway
 
 stages: [validate, test, build, deploy, cleanup]
 
