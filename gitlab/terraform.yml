@@ -3,6 +3,33 @@ variables:
   TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"
   TF_VAR_my_apps: '[{ENVIRONMENT:"$ENVIRONMENT",port:"$port"}]'
 
+terraform_check_for_changes:
+  stage: .pre
+  script:
+    - !reference [.terraform_report_changes]
+  artifacts:
+    paths:
+      - tfplan
+    reports:
+      terraform: plan.json
+    reports:
+      dotenv: changes.env
+
+terraform_apply:
+  stage: build
+  script:
+    - !reference [.terraform_apply_changes] 
+  needs:
+    - job: terraform_check_for_changes
+      artifacts: true
+  artifacts:
+    reports:
+      dotenv: envurl.env
+  environment:
+    name: $UPSTREAM_ENVIRONMENT_NAME
+    url: $DYNAMIC_ENVIRONMENT_URL
+  
+
 .terraform_init:
     - terraform init
       -backend-config="address=${TF_ADDRESS}"

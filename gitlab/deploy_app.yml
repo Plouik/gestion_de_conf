@@ -19,37 +19,10 @@
 
  
 include: 
-  local: gitlab/terraform.yml   
-
-terraform_check_for_changes:
-  stage: .pre
-  script:
-    - !reference [.terraform_report_changes]
-  artifacts:
-    paths:
-      - tfplan
-    reports:
-      terraform: plan.json
-    reports:
-      dotenv: changes.env
-
-
-terraform_apply:
-  stage: deploy
-  script:
-    - !reference [.terraform_apply_changes] 
-  needs:
-    - job: terraform_check_for_changes
-      artifacts: true
-  rules:
-    - if: $TERRAFORM_HAS_CHANGED == "true"
-  artifacts:
-    reports:
-      dotenv: envurl.env
-  environment:
-    name: $UPSTREAM_ENVIRONMENT_NAME
-    url: $DYNAMIC_ENVIRONMENT_URL
-  
+  - local: gitlab/terraform.yml
+    rules:
+    - changes: ["**/*", "*"]
+      when: on_success
 
 test:
   stage: test
