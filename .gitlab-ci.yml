@@ -4,6 +4,7 @@ include:
       review-enabled: true
       tflint-disabled: false
       trivy-disabled: false
+  - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0
 
 .tf-workspace:
   parallel:
