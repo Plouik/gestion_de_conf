@@ -27,15 +27,12 @@ tf-tflint:
         TF_VAR_my_apps: '[{"ENVIRONMENT":"prod","port":80}]'
 
 plan:
-  parallel: !reference [.environment-matrix, parallel]
+  extends: [.opentofu:plan, .environment-matrix]
 
 apply:
-  parallel: !reference [.environment-matrix, parallel]
+  extends: [.opentofu:apply, .environment-matrix]
   needs:
-    - job: plan
-      parallel:
-        matrix:
-          - TF_STATE_NAME: ['$[[ matrix.TF_STATE_NAME ]]']
+    - plan          # waits for ALL plan matrix instances
   tags:
     - devcontainer
 
