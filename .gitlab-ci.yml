@@ -1,9 +1,9 @@
 include:
+  # - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0
   - component: gitlab.com/components/opentofu/full-pipeline@4.9.0
     inputs:
       opentofu_version: 1.12.6
       job_name_prefix: 'dev-'
-      root_dir: test/
       state_name: dev
       environment_name: dev
       var_file: env/dev.tfvars
@@ -12,7 +12,6 @@ include:
     inputs:
       opentofu_version: 1.12.6
       job_name_prefix: 'prod-'
-      root_dir: prod/
       state_name: prod
       environment_name: production
       var_file: env/prod.tfvars
