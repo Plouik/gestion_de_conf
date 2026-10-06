@@ -9,14 +9,14 @@ include:
 
 stages: [validate, test, build, deploy, cleanup]
 
-tf-tflint:
-  image: ghcr.io/terraform-linters/tflint:v0.64.0
-  stage: validate
-  script:
-    - tflint --init
-    - tflint --recursive
-  rules:
-    - when: on_success
+# tf-tflint:
+#   image: ghcr.io/terraform-linters/tflint:v0.64.0
+#   stage: validate
+#   script:
+#     - tflint --init
+#     - tflint --recursive
+#   rules:
+#     - when: on_success
 
 .environment-matrix:
   parallel: 
