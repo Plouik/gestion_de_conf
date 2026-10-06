@@ -6,8 +6,8 @@ variables:
   # IDENTITY: "myID"
   # IMAGE_TO_DEPLOY: "backend:${ENVIRONMENT}"
 
-include: 
-  local: gitlab/deploy_app.yml
+# include: 
+#   local: gitlab/deploy_app.yml
   
 deploy-prod:
   trigger:
@@ -15,12 +15,8 @@ deploy-prod:
       - local: gitlab/deploy_app.yml
   # extends: .act-on-change
   stage: deploy
-  artifacts:
-    reports:
-      dotenv: envurl.env
   environment:
-    name: production
-    url: $DYNAMIC_ENVIRONMENT_URL
+    name: $ENVIRONMENT
     on_stop: stop_prod
 
 stop_prod:

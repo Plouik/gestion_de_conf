@@ -55,6 +55,7 @@ test:
     fi
     ENV_URL=$( terraform output -raw "webapp_url" )
     echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
+    
 
 act-on-change:
   stage: build
@@ -66,3 +67,10 @@ act-on-change:
     # - !reference [.build_and_push_docker] 
     - !reference [.terraform_init] 
     - !reference [.terraform_pass_or_apply_changes] 
+  artifacts:
+    reports:
+      dotenv: envurl.env
+  environment:
+    name: $ENVIRONMENT
+    url: $DYNAMIC_ENVIRONMENT_URL
+  
