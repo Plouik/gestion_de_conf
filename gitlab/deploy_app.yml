@@ -1,24 +1,13 @@
 variables:
   TF_STATE_NAME: "${ENVIRONMENT}"
   TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"
-  TF_VAR_environment: ${ENVIRONMENT}
-  TF_VAR_ressource_group: "${RESSOURCE_GROUP}"
-  TF_VAR_registry: "${REGISTRY}"
-  TF_VAR_image: "$IMAGE_TO_DEPLOY"
-  TF_VAR_identity_username: "$IDENTITY"  
-
-.terraform_init:
-  - terraform init
-    -backend-config="address=${TF_ADDRESS}"
-    -backend-config="lock_address=${TF_ADDRESS}/lock"
-    -backend-config="unlock_address=${TF_ADDRESS}/lock"
-    -backend-config="username=gitlab-ci-token"
-    -backend-config="password=${CI_JOB_TOKEN}"
-    -backend-config="lock_method=POST"
-    -backend-config="unlock_method=DELETE"
+  # TF_VAR_environment: ${ENVIRONMENT}
   TF_VAR_my_apps: '[{ENVIRONMENT:"$ENVIRONMENT",port:"$port"}]'
-  TF_STATE_NAME: "${ENVIRONMENT}"
-  TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"  
+
+  # TF_VAR_ressource_group: "${RESSOURCE_GROUP}"
+  # TF_VAR_registry: "${REGISTRY}"
+  # TF_VAR_image: "$IMAGE_TO_DEPLOY"
+  # TF_VAR_identity_username: "$IDENTITY"  
 
 .terraform_init:
     - terraform init
@@ -36,9 +25,9 @@ variables:
     - !reference [.terraform_init]
     - terraform destroy --auto-approve
 
-.build_and_push_docker:
-  - docker build -t "$REGISTRY/$IMAGE_TO_DEPLOY" --build-arg ENVIRONMENT=$ENVIRONMENT ./backend/
-  - docker push "$REGISTRY/$IMAGE_TO_DEPLOY"
+# .build_and_push_docker:
+#   - docker build -t "$REGISTRY/$IMAGE_TO_DEPLOY" --build-arg ENVIRONMENT=$ENVIRONMENT ./backend/
+#   - docker push "$REGISTRY/$IMAGE_TO_DEPLOY"
 test:
   stage: test
   script: 
@@ -47,13 +36,13 @@ test:
        echo "Testing that or server is running as $ENVIRONMENT on port $port. Current value is $output";
        echo $output | grep -o "$ENVIRONMENT";
 
-.azure_and_docker_login:
-  - az login --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
-  - creds=$(az acr credential show --resource-group "$RESSOURCE_GROUP" --name "${REGISTRY%%.*}")
-  - username=$( echo "$creds" | jq -r '.username' )
-  - password=$( echo "$creds" | jq -r '.passwords[0].value' )
-  - rm -f /root/.docker/config.json #fix super moche 
-  - docker login "$REGISTRY" --username "$username" --password "$password"
+# .azure_and_docker_login:
+#   - az login --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
+#   - creds=$(az acr credential show --resource-group "$RESSOURCE_GROUP" --name "${REGISTRY%%.*}")
+#   - username=$( echo "$creds" | jq -r '.username' )
+#   - password=$( echo "$creds" | jq -r '.passwords[0].value' )
+#   - rm -f /root/.docker/config.json #fix super moche 
+#   - docker login "$REGISTRY" --username "$username" --password "$password"
 
 .terraform_pass_or_apply_changes:
   - |
@@ -67,12 +56,13 @@ test:
     ENV_URL=$( terraform output -raw "webapp_url" )
     echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
 
-.act-on-change:
-  id_tokens:
-    GITLAB_OIDC_TOKEN:
-      aud: https://gitlab.com/Plouik/config
+act-on-change:
+  stage: build
+  # id_tokens:
+  #   GITLAB_OIDC_TOKEN:
+  #     aud: https://gitlab.com/Plouik/config
   script:
-    - !reference [.azure_and_docker_login]
-    - !reference [.build_and_push_docker] 
+    # - !reference [.azure_and_docker_login]
+    # - !reference [.build_and_push_docker] 
     - !reference [.terraform_init] 
     - !reference [.terraform_pass_or_apply_changes] 

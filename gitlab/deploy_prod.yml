@@ -1,15 +1,19 @@
 variables:
   ENVIRONMENT: "prod" 
-  RESSOURCE_GROUP: "configuration-demo"
-  REGISTRY: "omiomidemoomi.azurecr.io"
-  IDENTITY: "myID"
-  IMAGE_TO_DEPLOY: "backend:${ENVIRONMENT}"
+  port: 80
+  # RESSOURCE_GROUP: "configuration-demo"
+  # REGISTRY: "omiomidemoomi.azurecr.io"
+  # IDENTITY: "myID"
+  # IMAGE_TO_DEPLOY: "backend:${ENVIRONMENT}"
 
 include: 
   local: gitlab/deploy_app.yml
   
 deploy-prod:
-  extends: .act-on-change
+  trigger:
+    include:
+      - local: gitlab/deploy_app.yml
+  # extends: .act-on-change
   stage: deploy
   artifacts:
     reports:

@@ -1,9 +1,10 @@
 variables:
   ENVIRONMENT: "$CI_COMMIT_REF_SLUG"
-  RESSOURCE_GROUP: "configuration-demo"
-  REGISTRY: "omiomidemoomi.azurecr.io"
-  IDENTITY: "myID"
-  IMAGE_TO_DEPLOY: "backend:${ENVIRONMENT}"
+  port: 7000
+  # RESSOURCE_GROUP: "configuration-demo"
+  # REGISTRY: "omiomidemoomi.azurecr.io"
+  # IDENTITY: "myID"
+  # IMAGE_TO_DEPLOY: "backend:${ENVIRONMENT}"
 
 include: 
   local: gitlab/deploy_app.yml
