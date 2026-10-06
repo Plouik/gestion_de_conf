@@ -1,10 +1,9 @@
 include:
+  - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0
   - component: $CI_SERVER_FQDN/to-be-continuous/terraform/gitlab-ci-terraform@9.5.1
     inputs:
       review-enabled: true
-      tflint-disabled: false
-      trivy-disabled: false
-  - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0
+      trivy-disabled: true
 
 .tf-workspace:
   parallel:
@@ -25,11 +24,5 @@ include:
 tf-tflint:
   rules:
     - if: '$TF_TFLINT_DISABLED == "true"' 
-      when: never
-    - when: on_success
-
-tf-trivy:
-  rules:
-    - if: '$TF_TRIVY_DISABLED == "true"'
       when: never
     - when: on_success
