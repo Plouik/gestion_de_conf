@@ -1,10 +1,10 @@
 include:
-  # - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0
+  - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0
   - component: gitlab.com/components/opentofu/full-pipeline@4.9.0
     inputs:
       opentofu_version: 1.12.6
-      job_name_prefix: 'dev-'
       state_name: dev
+      cache_policy: pull-push
       auto_define_backend: true
       var_file: env/dev.tfvars
       apply_rules:
@@ -12,35 +12,19 @@ include:
       destroy_rules:
         - when: always
 
-  - component: gitlab.com/components/opentofu/full-pipeline@4.9.0
-    inputs:
-      opentofu_version: 1.12.6
-      job_name_prefix: 'prod-'
-      state_name: prod
-      auto_define_backend: true
-      var_file: env/prod.tfvars
-      apply_rules:
-        - when: always
-      destroy_rules:
-        - when: always
-
 stages: [validate, test, build, deploy, cleanup]
 
-# tf-tflint:
-#   image: ghcr.io/terraform-linters/tflint:v0.64.0
-#   stage: validate
-#   script:
-#     - tflint --init
-#     - tflint --recursive
-#   rules:
-#     - when: on_success
+tf-tflint:
+  image: ghcr.io/terraform-linters/tflint:v0.64.0
+  stage: validate
+  script:
+    - tflint --init
+    - tflint --recursive
+  rules:
+    - when: on_success
 
 
 dev-apply:
-  tags:
-    - devcontainer
-
-prod-apply:
   tags:
     - devcontainer
 
@@ -48,8 +32,5 @@ dev-destroy:
   tags:
     - devcontainer
 
-prod-destroy:
-  tags:
-    - devcontainer
 
 
