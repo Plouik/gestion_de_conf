@@ -1,7 +1,5 @@
 stages:
-  - build
   - deploy
-  - review
   - cleanup
 
 variables:

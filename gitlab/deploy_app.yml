@@ -1,9 +1,3 @@
-variables:
-  TF_STATE_NAME: "${ENVIRONMENT}"
-  TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"
-  # TF_VAR_environment: ${ENVIRONMENT}
-  TF_VAR_my_apps: '[{ENVIRONMENT:"$ENVIRONMENT",port:"$port"}]'
-
   # TF_VAR_ressource_group: "${RESSOURCE_GROUP}"
   # TF_VAR_registry: "${REGISTRY}"
   # TF_VAR_image: "$IMAGE_TO_DEPLOY"

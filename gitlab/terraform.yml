@@ -1,3 +1,9 @@
+variables:
+  TF_STATE_NAME: "${ENVIRONMENT}"
+  TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"
+  # TF_VAR_environment: ${ENVIRONMENT}
+  TF_VAR_my_apps: '[{ENVIRONMENT:"$ENVIRONMENT",port:"$port"}]'
+
 .terraform_init:
     - terraform init
       -backend-config="address=${TF_ADDRESS}"

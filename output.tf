@@ -1,3 +1,3 @@
 output "webapp_url" {
-  value = "http://test"
+  value = module.demo_app.ip_address
 }

@@ -10,25 +10,22 @@ variables:
 #   local: gitlab/deploy_app.yml
   
 deploy-prod:
+  stage: deploy
   trigger:
     include:
       - local: gitlab/deploy_app.yml
   # extends: .act-on-change
-  stage: deploy
   environment:
     name: $ENVIRONMENT
     on_stop: stop_prod
 
 
 stop_prod:
+  stage: cleanup
   trigger:
     include:
       - local: gitlab/destroy_app.yml
-  when: manual
-  variables:
-    GIT_STRATEGY: none
-  stage: cleanup
   environment:
     name: $ENVIRONMENT
     action: stop
-  allow_failure: true
+  when: manual
