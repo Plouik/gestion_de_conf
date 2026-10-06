@@ -17,8 +17,8 @@ resource "gitlab_user_runner" "project" {
   runner_type = "project_type"
   project_id  = data.gitlab_project.target.id
 
-  description = "devcontainer-runner"
-  tag_list    = ["devcontainer-runner"]
+  description = "devcontainer"
+  tag_list    = ["devcontainer"]
   untagged    = true
 }
 

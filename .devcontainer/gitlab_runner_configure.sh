@@ -20,6 +20,6 @@ gitlab-runner register \
     --url https://gitlab.com \
     --executor "shell" \
     --token "$RUNNER_TOKEN" \
-    --description "devcontainer-runner" 
+    --description "devcontainer" 
 gitlab-runner run > /dev/null
 
