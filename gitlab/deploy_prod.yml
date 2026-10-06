@@ -19,6 +19,7 @@ deploy-prod:
     name: $ENVIRONMENT
     on_stop: stop_prod
 
+
 stop_prod:
   script:
     - terraform destroy --auto-approve
