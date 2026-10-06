@@ -16,6 +16,19 @@ variables:
     -backend-config="password=${CI_JOB_TOKEN}"
     -backend-config="lock_method=POST"
     -backend-config="unlock_method=DELETE"
+  TF_VAR_my_apps: '[{ENVIRONMENT:"$ENVIRONMENT",port:"$port"}]'
+  TF_STATE_NAME: "${ENVIRONMENT}"
+  TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"  
+
+.terraform_init:
+    - terraform init
+      -backend-config="address=${TF_ADDRESS}"
+      -backend-config="lock_address=${TF_ADDRESS}/lock"
+      -backend-config="unlock_address=${TF_ADDRESS}/lock"
+      -backend-config="username=gitlab-ci-token"
+      -backend-config="password=${CI_JOB_TOKEN}"
+      -backend-config="lock_method=POST"
+      -backend-config="unlock_method=DELETE"
 
 .teardown:
   stage: cleanup
@@ -26,6 +39,13 @@ variables:
 .build_and_push_docker:
   - docker build -t "$REGISTRY/$IMAGE_TO_DEPLOY" --build-arg ENVIRONMENT=$ENVIRONMENT ./backend/
   - docker push "$REGISTRY/$IMAGE_TO_DEPLOY"
+test:
+  stage: test
+  script: 
+    - |
+       output=$( curl http://localhost:$port/ );
+       echo "Testing that or server is running as $ENVIRONMENT on port $port. Current value is $output";
+       echo $output | grep -o "$ENVIRONMENT";
 
 .azure_and_docker_login:
   - az login --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
