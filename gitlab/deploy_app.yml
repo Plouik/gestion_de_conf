@@ -40,6 +40,6 @@ act-on-change:
     reports:
       dotenv: envurl.env
   environment:
-    name: $ENVIRONMENT
+    name: $UPSTREAM_ENVIRONMENT_NAME
     url: $DYNAMIC_ENVIRONMENT_URL
   

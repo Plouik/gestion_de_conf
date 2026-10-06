@@ -1,24 +1,34 @@
 variables:
-  ENVIRONMENT: "review/$CI_COMMIT_REF_SLUG"
+  ENVIRONMENT: "$CI_COMMIT_REF_SLUG"
   port: 7000
 
-deploy-review:
-  stage: deploy
+.downstream-deployment-pipeline:
+  variables:
+    UPSTREAM_ENVIRONMENT_NAME: $CI_ENVIRONMENT_NAME
   trigger:
     include:
       - local: gitlab/deploy_app.yml
     strategy: depend
-  environment:
-    name: $ENVIRONMENT
-    on_stop: stop_review
 
-stop_review:
-  stage: cleanup
+.downstream-destroy-pipeline:
+  variables:
+    UPSTREAM_ENVIRONMENT_NAME: $CI_ENVIRONMENT_NAME
   trigger:
     include:
       - local: gitlab/destroy_app.yml
     strategy: depend
+
+deploy-review:
+  stage: deploy
+  extends: .downstream-deployment-pipeline
   environment:
-    name: $ENVIRONMENT
+    name: review/$ENVIRONMENT
+    on_stop: stop_review
+
+stop_review:
+  stage: cleanup
+  extends: .downstream-destroy-pipeline
+  environment:
+    name: review/$ENVIRONMENT
     action: stop
   when: manual
