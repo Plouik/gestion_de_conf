@@ -1,0 +1,23 @@
+.terraform_init:
+    - terraform init
+      -backend-config="address=${TF_ADDRESS}"
+      -backend-config="lock_address=${TF_ADDRESS}/lock"
+      -backend-config="unlock_address=${TF_ADDRESS}/lock"
+      -backend-config="username=gitlab-ci-token"
+      -backend-config="password=${CI_JOB_TOKEN}"
+      -backend-config="lock_method=POST"
+      -backend-config="unlock_method=DELETE"
+
+
+
+.terraform_pass_or_apply_changes:
+  - |
+    set +e
+    terraform plan -detailed-exitcode --out main.tfplan
+    CHECK_FOR_CHANGE=$?
+    set -e
+    if [ $CHECK_FOR_CHANGE -eq 2 ]; then
+      terraform apply main.tfplan
+    fi
+    ENV_URL=$( terraform output -raw "webapp_url" )
+    echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env

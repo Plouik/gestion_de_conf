@@ -9,21 +9,8 @@ variables:
   # TF_VAR_image: "$IMAGE_TO_DEPLOY"
   # TF_VAR_identity_username: "$IDENTITY"  
 
-.terraform_init:
-    - terraform init
-      -backend-config="address=${TF_ADDRESS}"
-      -backend-config="lock_address=${TF_ADDRESS}/lock"
-      -backend-config="unlock_address=${TF_ADDRESS}/lock"
-      -backend-config="username=gitlab-ci-token"
-      -backend-config="password=${CI_JOB_TOKEN}"
-      -backend-config="lock_method=POST"
-      -backend-config="unlock_method=DELETE"
-
-.teardown:
-  stage: cleanup
-  script:
-    - !reference [.terraform_init]
-    - terraform destroy --auto-approve
+include: 
+  local: gitlab/terraform.yml
 
 # .build_and_push_docker:
 #   - docker build -t "$REGISTRY/$IMAGE_TO_DEPLOY" --build-arg ENVIRONMENT=$ENVIRONMENT ./backend/
@@ -43,18 +30,6 @@ test:
 #   - password=$( echo "$creds" | jq -r '.passwords[0].value' )
 #   - rm -f /root/.docker/config.json #fix super moche 
 #   - docker login "$REGISTRY" --username "$username" --password "$password"
-
-.terraform_pass_or_apply_changes:
-  - |
-    set +e
-    terraform plan -detailed-exitcode --out main.tfplan
-    CHECK_FOR_CHANGE=$?
-    set -e
-    if [ $CHECK_FOR_CHANGE -eq 2 ]; then
-      terraform apply main.tfplan
-    fi
-    ENV_URL=$( terraform output -raw "webapp_url" )
-    echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
     
 
 act-on-change:

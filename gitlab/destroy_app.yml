@@ -1,0 +1,8 @@
+include: 
+  local: gitlab/terraform.yml
+
+teardown:
+  stage: deploy
+  script:
+    - !reference [.terraform_init]
+    - terraform destroy --auto-approve

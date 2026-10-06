@@ -21,11 +21,13 @@ deploy-prod:
 
 
 stop_prod:
-  script:
-    - terraform destroy --auto-approve
-  needs:
-    - deploy-prod
-  stage: review
+  trigger:
+    include:
+      - local: gitlab/destroy_app.yml
+  when: manual
+  variables:
+    GIT_STRATEGY: none
+  stage: cleanup
   environment:
     name: $ENVIRONMENT
     action: stop
