@@ -22,7 +22,7 @@ include:
   - local: gitlab/terraform.yml
     rules:
     - changes: ["**/*", "*"]
-      when: on_success
+      when: always
 
 test:
   stage: test
