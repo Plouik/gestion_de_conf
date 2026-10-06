@@ -9,8 +9,17 @@ include:
 
 stages: [validate, test, build, deploy, cleanup]
 
+tf-tflint:
+  image: ghcr.io/terraform-linters/tflint:v0.64.0
+  stage: validate
+  script:
+    - tflint --init
+    - tflint --recursive
+  rules:
+    - when: on_success
+
 .environment-matrix:
-  parallel: &environment-matrix
+  parallel: 
     matrix:
       - TF_STATE_NAME: "dev"
         TF_VAR_my_apps: '[{"ENVIRONMENT":"dev","port":7000}]'
@@ -18,10 +27,10 @@ stages: [validate, test, build, deploy, cleanup]
         TF_VAR_my_apps: '[{"ENVIRONMENT":"prod","port":80}]'
 
 plan:
-  parallel: *environment-matrix
+  parallel: !reference [.environment-matrix, parallel]
 
 apply:
-  parallel: *environment-matrix
+  parallel: !reference [.environment-matrix, parallel]
   needs:
     - job: plan
       parallel:
@@ -31,16 +40,9 @@ apply:
     - devcontainer
 
 destroy:
-  parallel: *environment-matrix
+  parallel: !reference [.environment-matrix, parallel]
   tags:
     - devcontainer
 
-tf-tflint:
-  image: ghcr.io/terraform-linters/tflint:v0.64.0
-  stage: validate
-  script:
-    - tflint --init
-    - tflint --recursive
-  rules:
-    - when: on_success
+
 
