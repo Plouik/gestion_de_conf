@@ -3,13 +3,12 @@ include:
   - component: $CI_SERVER_FQDN/to-be-continuous/terraform/gitlab-ci-terraform@9.5.1
     inputs:
       review-enabled: true
-      trivy-disabled: true
 
 .tf-workspace:
   parallel:
     matrix:
       - TF_ENVIRONMENT_NAMESPACE: "/dev"
-        TF_VAR_my_apps: '[{"ENVIRONMENT":"dev","port":7000}]' 
+        TF_VAR_my_apps: '[{"ENVIRONMENT":"dev","port":7000}]'
       - TF_ENVIRONMENT_NAMESPACE: "/prod"
         TF_VAR_my_apps: '[{"ENVIRONMENT":"prod","port":80}]'
 
@@ -24,5 +23,11 @@ include:
 tf-tflint:
   rules:
     - if: '$TF_TFLINT_DISABLED == "true"' 
+      when: never
+    - when: on_success
+
+tf-trivy:
+  rules:
+    - if: '$TF_TRIVY_DISABLED == "true"'
       when: never
     - when: on_success
