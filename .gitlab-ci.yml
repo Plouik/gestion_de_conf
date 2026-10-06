@@ -1,13 +1,23 @@
 include:
-  - component: $CI_SERVER_FQDN/components/opentofu/job-templates@4.9.0
+  - component: gitlab.com/components/opentofu/full-pipeline@4.9.0
     inputs:
-      version: "4.9.0"
-      opentofu_version: "1.12.6"
-      state_name: "$TF_STATE_NAME"
-      auto_define_backend: true
-  - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0
+      opentofu_version: 1.12.6
+      job_name_prefix: 'dev-'
+      root_dir: test/
+      state_name: dev
+      environment_name: dev
+      var_file: env/dev.tfvars
 
-stages: [validate, test, build, deploy, cleanup]
+  - component: gitlab.com/components/opentofu/full-pipeline@4.9.0
+    inputs:
+      opentofu_version: 1.12.6
+      job_name_prefix: 'prod-'
+      root_dir: prod/
+      state_name: prod
+      environment_name: production
+      var_file: env/prod.tfvars
+
+# stages: [validate, test, build, deploy, cleanup]
 
 # tf-tflint:
 #   image: ghcr.io/terraform-linters/tflint:v0.64.0
@@ -18,28 +28,21 @@ stages: [validate, test, build, deploy, cleanup]
 #   rules:
 #     - when: on_success
 
-.environment-matrix:
-  parallel: 
-    matrix:
-      - TF_STATE_NAME: "dev"
-        TF_VAR_my_apps: '[{"ENVIRONMENT":"dev","port":7000}]'
-      - TF_STATE_NAME: "prod"
-        TF_VAR_my_apps: '[{"ENVIRONMENT":"prod","port":80}]'
 
-plan:
-  extends: [.opentofu:plan, .environment-matrix]
-
-apply:
-  extends: [.opentofu:apply, .environment-matrix]
-  needs:
-    - plan          # waits for ALL plan matrix instances
+dev-apply:
   tags:
     - devcontainer
 
-destroy:
-  extends: [.opentofu:destroy, .environment-matrix]
+prod-apply:
   tags:
     - devcontainer
 
+dev-destroy:
+  tags:
+    - devcontainer
+
+prod-destroy:
+  tags:
+    - devcontainer
 
 

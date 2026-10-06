@@ -1,11 +1,11 @@
 set -eu
 
 TERRAFORM_DIR=".devcontainer"
-terraform -chdir="$TERRAFORM_DIR" init
-terraform -chdir="$TERRAFORM_DIR" apply -auto-approve
+tofu -chdir="$TERRAFORM_DIR" init
+tofu -chdir="$TERRAFORM_DIR" apply -auto-approve
 
-RUNNER_TOKEN="$(terraform -chdir="$TERRAFORM_DIR" output -raw runner_token)"
-
+RUNNER_TOKEN="$(tofu -chdir="$TERRAFORM_DIR" output -raw runner_token)"
+ln -s /usr/bin/tofu /usr/bin/gitlab-tofu 
 # Download the binary for your system
 echo "Downloading gitlab-runner"
 curl --fail --location --retry 3 --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64

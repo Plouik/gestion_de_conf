@@ -1,8 +1,8 @@
 TERRAFORM_DIR=".devcontainer"
-terraform -chdir="$TERRAFORM_DIR" init
-terraform -chdir="$TERRAFORM_DIR" apply -auto-approve
+tofu -chdir="$TERRAFORM_DIR" init
+tofu -chdir="$TERRAFORM_DIR" apply -auto-approve
 
-RUNNER_TOKEN="$(terraform -chdir="$TERRAFORM_DIR" output -raw runner_token)"
+RUNNER_TOKEN="$(tofu -chdir="$TERRAFORM_DIR" output -raw runner_token)"
 
 
 gitlab-runner uninstall
