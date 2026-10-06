@@ -61,8 +61,8 @@ terraform_apply:
     fi
 
 .terraform_apply_changes:
+  - terraform apply -input=false "tfplan"
+  - !reference [.terraform_init]
   - |
-    terraform apply -input=false "tfplan"
-    terraform show -json "tfplan" | jq -r '.values.outputs'
-    ENV_URL=$( terraform show -json "tfplan" | jq -r '.values.outputs.webapp_url.value' )
+    ENV_URL=$(terraform output -raw "webapp_url")
     echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" > envurl.env
