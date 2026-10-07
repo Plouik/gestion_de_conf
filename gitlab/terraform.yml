@@ -1,8 +1,43 @@
 variables:
   TF_STATE_NAME: "${ENVIRONMENT}"
   TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"
-  # TF_VAR_environment: ${ENVIRONMENT}
+  TF_HTTP_PASSWORD: "${CI_JOB_TOKEN}"
   TF_VAR_my_apps: '[{ENVIRONMENT:"$ENVIRONMENT",port:"$port"}]'
+  TF_PLUGIN_CACHE_DIR: "$CI_PROJECT_DIR/.terraform-plugin-cache"
+
+cache:
+  key:
+    files:
+      - .terraform.lock.hcl
+  paths:
+    - .terraform-plugin-cache/
+    - .terraform/providers/
+
+terraform_check_for_changes:
+  stage: .pre
+  script:
+    - !reference [.terraform_report_changes]
+  artifacts:
+    paths:
+      - tfplan
+    reports:
+      terraform: plan.json
+      dotenv: changes.env
+
+terraform_apply:
+  stage: build
+  script:
+    - !reference [.terraform_apply_changes] 
+  needs:
+    - job: terraform_check_for_changes
+      artifacts: true
+  artifacts:
+    reports:
+      dotenv: envurl.env
+  environment:
+    name: $UPSTREAM_ENVIRONMENT_NAME
+    url: $DYNAMIC_ENVIRONMENT_URL
+  
 
 .terraform_init:
     - terraform init
@@ -10,20 +45,24 @@ variables:
       -backend-config="lock_address=${TF_ADDRESS}/lock"
       -backend-config="unlock_address=${TF_ADDRESS}/lock"
       -backend-config="username=gitlab-ci-token"
-      -backend-config="password=${CI_JOB_TOKEN}"
       -backend-config="lock_method=POST"
       -backend-config="unlock_method=DELETE"
 
-
-
-.terraform_pass_or_apply_changes:
+.terraform_report_changes:
+  - !reference [.terraform_init] 
   - |
     set +e
-    terraform plan -detailed-exitcode --out main.tfplan
+    terraform plan -detailed-exitcode --out tfplan
     CHECK_FOR_CHANGE=$?
     set -e
     if [ $CHECK_FOR_CHANGE -eq 2 ]; then
-      terraform apply main.tfplan
+      echo "TERRAFORM_HAS_CHANGED=true" > changes.env
+      terraform show -json tfplan > plan.json
     fi
-    ENV_URL=$( terraform output -raw "webapp_url" )
-    echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" >> envurl.env
+
+.terraform_apply_changes:
+  - terraform apply -input=false "tfplan"
+  - !reference [.terraform_init]
+  - |
+    ENV_URL=$(terraform output -raw "webapp_url")
+    echo "DYNAMIC_ENVIRONMENT_URL=${ENV_URL}" > envurl.env

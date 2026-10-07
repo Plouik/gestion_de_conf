@@ -3,7 +3,7 @@ stages:
   - cleanup
 
 variables:
-  SECURE_LOG_LEVEL: "info"
+  TF_LOG_LEVEL: "info"
 
 include: 
   - local: gitlab/deploy_review.yml

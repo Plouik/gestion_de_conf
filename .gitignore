@@ -1,9 +1,7 @@
 .terraform/*
-.terraform.lock.hcl
 cache
 builds
 secrets.env
 .devcontainer/.terraform
-.devcontainer/.terraform.lock.hcl
 .devcontainer/terraform.tfstate
 .devcontainer/terraform.tfstate.backup

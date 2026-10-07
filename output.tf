@@ -1,3 +1,3 @@
 output "webapp_url" {
-  value = "http://localhost:80"
+  value = "http://localhost:7000"
 }
