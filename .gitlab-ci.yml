@@ -8,7 +8,7 @@ variables:
 include: 
   - local: gitlab/deploy_review.yml
     rules:
-      - if: '$CI_COMMIT_BRANCH != "master"'
+      - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   - local: gitlab/deploy_prod.yml
     rules:
       - if: '$CI_COMMIT_BRANCH == "master"'
