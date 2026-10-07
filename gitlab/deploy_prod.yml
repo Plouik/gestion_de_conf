@@ -22,4 +22,3 @@ deploy-prod:
   extends: .downstream-deployment-pipeline
   environment:
     name: $ENVIRONMENT
-    on_stop: stop_prod
