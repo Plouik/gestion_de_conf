@@ -2,7 +2,7 @@ variables:
   TF_STATE_NAME: "${ENVIRONMENT}"
   TF_ADDRESS: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"
   TF_HTTP_PASSWORD: "${CI_JOB_TOKEN}"
-  TF_VAR_my_apps: '[{ENVIRONMENT:"$ENVIRONMENT",port:"$port"}]'# Directory for cached provider plugins
+  TF_VAR_my_apps: '[{ENVIRONMENT:"$ENVIRONMENT",port:"$port"}]'
   TF_PLUGIN_CACHE_DIR: "$CI_PROJECT_DIR/.terraform-plugin-cache"
 
 cache:

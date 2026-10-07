@@ -28,6 +28,8 @@ deploy-review:
 stop_review:
   stage: cleanup
   extends: .downstream-destroy-pipeline
+  variables:
+    GIT_STRATEGY: none
   environment:
     name: review/$ENVIRONMENT
     action: stop
