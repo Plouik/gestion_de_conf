@@ -16,8 +16,7 @@ workflow:
 include: 
   - local: gitlab/deploy_review.yml
     rules:
-      - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-
+      - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME != "master"'
   - local: gitlab/deploy_prod.yml
     rules:
       - if: '$CI_COMMIT_BRANCH == "master"'
