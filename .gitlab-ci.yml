@@ -5,10 +5,19 @@ stages:
 variables:
   TF_LOG_LEVEL: "info"
 
+workflow:
+  rules:
+    # Run pipelines for merge requests
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    # Also run for main branch pushes
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+
 include: 
   - local: gitlab/deploy_review.yml
     rules:
-      - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
   - local: gitlab/deploy_prod.yml
     rules:
       - if: '$CI_COMMIT_BRANCH == "master"'
