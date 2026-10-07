@@ -1,4 +1,7 @@
-
+workflow:
+  rules:
+    # Run pipelines for merge requests
+    - if: '$CI_PIPELINE_SOURCE == "parent_pipeline"'
 
 include: 
   local: gitlab/terraform.yml

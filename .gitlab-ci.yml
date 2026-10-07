@@ -5,10 +5,17 @@ stages:
 variables:
   TF_LOG_LEVEL: "info"
 
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - when: never
+
+
 include: 
   - local: gitlab/deploy_review.yml
     rules:
-      - if: '$CI_COMMIT_BRANCH != "master"'
+      - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME != $CI_DEFAULT_BRANCH && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
   - local: gitlab/deploy_prod.yml
     rules:
-      - if: '$CI_COMMIT_BRANCH == "master"'
+      - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'

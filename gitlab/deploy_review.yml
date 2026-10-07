@@ -5,6 +5,7 @@ variables:
 .downstream-deployment-pipeline:
   variables:
     UPSTREAM_ENVIRONMENT_NAME: $CI_ENVIRONMENT_NAME
+    UPSTREAM_REF: $CI_MERGE_REQUEST_REF_PATH
   trigger:
     include:
       - local: gitlab/deploy_app.yml
@@ -13,6 +14,7 @@ variables:
 .downstream-destroy-pipeline:
   variables:
     UPSTREAM_ENVIRONMENT_NAME: $CI_ENVIRONMENT_NAME
+    UPSTREAM_REF: $CI_MERGE_REQUEST_REF_PATH
   trigger:
     include:
       - local: gitlab/destroy_app.yml
@@ -24,6 +26,8 @@ deploy-review:
   environment:
     name: review/$ENVIRONMENT
     on_stop: stop_review
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 stop_review:
   stage: cleanup
@@ -34,3 +38,5 @@ stop_review:
     name: review/$ENVIRONMENT
     action: stop
   when: manual
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
