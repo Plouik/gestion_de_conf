@@ -1,5 +1,5 @@
 include:
-  - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0
+  - component: $CI_SERVER_FQDN/components/sast/iac-sast@3.5.0 
   - component: $CI_SERVER_FQDN/to-be-continuous/terraform/gitlab-ci-terraform@9.5.1
     inputs:
       review-enabled: true
