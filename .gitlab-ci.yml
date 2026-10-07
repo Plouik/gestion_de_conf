@@ -6,7 +6,7 @@ variables:
   TF_LOG_LEVEL: "info"
 
 include: 
-  - local: gitlab/deploy_review.yml 
+  - local: gitlab/deploy_review.yml
     rules:
       - if: '$CI_COMMIT_BRANCH != "master"'
   - local: gitlab/deploy_prod.yml
