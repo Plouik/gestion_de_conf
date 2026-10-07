@@ -16,7 +16,10 @@
 #   - password=$( echo "$creds" | jq -r '.passwords[0].value' )
 #   - rm -f /root/.docker/config.json #fix super moche 
 #   - docker login "$REGISTRY" --username "$username" --password "$password"
-
+workflow:
+  rules:
+    # Run pipelines for merge requests
+    - if: '$CI_PIPELINE_SOURCE == "parent_pipeline"'
  
 include: 
   - local: gitlab/terraform.yml

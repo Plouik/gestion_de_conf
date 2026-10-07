@@ -5,6 +5,7 @@ variables:
 .downstream-deployment-pipeline:
   variables:
     UPSTREAM_ENVIRONMENT_NAME: $CI_ENVIRONMENT_NAME
+    UPSTREAM_REF: $CI_MERGE_REQUEST_REF_PATH
   trigger:
     include:
       - local: gitlab/deploy_app.yml
@@ -13,6 +14,7 @@ variables:
 .downstream-destroy-pipeline:
   variables:
     UPSTREAM_ENVIRONMENT_NAME: $CI_ENVIRONMENT_NAME
+    UPSTREAM_REF: $CI_MERGE_REQUEST_REF_PATH
   trigger:
     include:
       - local: gitlab/destroy_app.yml

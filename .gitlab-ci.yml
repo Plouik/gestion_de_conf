@@ -7,9 +7,7 @@ variables:
 
 workflow:
   rules:
-    # Run pipelines for merge requests
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    # Also run for main branch pushes
     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
     - when: never
 
