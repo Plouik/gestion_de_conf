@@ -26,8 +26,6 @@ deploy-review:
   environment:
     name: review/$ENVIRONMENT
     on_stop: stop_review
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 stop_review:
   stage: cleanup
@@ -35,3 +33,7 @@ stop_review:
   environment:
     name: review/$ENVIRONMENT
     action: stop
+  when: manual
+  rules:
+   - if: $CI_MERGE_REQUEST_ID
+     when: manual
