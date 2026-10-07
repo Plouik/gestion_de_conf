@@ -57,8 +57,7 @@ terraform_apply:
     set -e
     if [ $CHECK_FOR_CHANGE -eq 2 ]; then
       echo "TERRAFORM_HAS_CHANGED=true" > changes.env
-      alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
-      terraform show -json tfplan | convert_report > plan.json
+      terraform show -json tfplan  > plan.json
     fi
 
 .terraform_apply_changes:
