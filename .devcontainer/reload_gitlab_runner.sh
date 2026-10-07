@@ -1,3 +1,10 @@
+set -eu
+
+TERRAFORM_DIR=".devcontainer"
+terraform -chdir="$TERRAFORM_DIR" init
+terraform -chdir="$TERRAFORM_DIR" apply -auto-approve
+
+RUNNER_TOKEN="$(terraform -chdir="$TERRAFORM_DIR" output -raw runner_token)"
 gitlab-runner uninstall
 rm -f /etc/gitlab-runner/config.toml 
 gitlab-runner install --user=root --working-directory=/root/gitlab-runner
